@@ -108,7 +108,7 @@ const makeVaccineTypes = (data) => {
     .style("justify-content", "center")
     .style("flex-wrap", "wrap");
 
-  container.append("p").text("source");
+  container.append("p").html("Source: <a href='https://google.com'>test</a>");
 
   //   const colors = d3.scaleOrdinal(d3.schemeTableau10);
   //   console.log(colors.range());
