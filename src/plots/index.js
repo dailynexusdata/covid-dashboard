@@ -6,7 +6,9 @@ import makeVaccineTypes from "./vaccineTypes";
 (async () => {
   const convertTime = d3.timeParse("%Y-%m-%d");
 
-  const vaccineData = await d3.csv("dist/data/vaccines.csv");
+  const vaccineData = await d3.csv(
+    "https://raw.githubusercontent.com/dailynexusdata/covid-dashboard/main/dist/data/vaccines.csv"
+  );
   vaccineData.forEach((d) => {
     d["date"] = convertTime(d["date"]);
     d.cumulative_pfizer_doses = +d.cumulative_pfizer_doses;
