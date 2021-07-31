@@ -1,10 +1,10 @@
-const path = require("path");
+const path = require('path');
 
 const config = {
-  entry: "./src/plots/index.js",
+  entry: './src/plots/index.js',
   output: {
-    filename: "covid-dashboard-bundle.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: 'covid-dashboard-bundle.js',
+    path: path.resolve(__dirname, 'dist'),
   },
   plugins: [],
   module: {
@@ -13,11 +13,11 @@ const config = {
         test: /\.s[ac]ss$/i,
         use: [
           // Creates `style` nodes from JS strings
-          "style-loader",
+          'style-loader',
           // Translates CSS into CommonJS
-          "css-loader",
+          'css-loader',
           // Compiles Sass to CSS
-          "sass-loader",
+          'sass-loader',
         ],
       },
     ],

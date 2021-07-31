@@ -6,7 +6,7 @@
  *
  * @since 7/30/2021
  */
-import * as d3 from "d3";
+import * as d3 from 'd3';
 
 /**
  * Shows single vaccine doses administered
@@ -34,12 +34,17 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
     width: 200,
     height: 200,
   };
-  const margin = { top: 10, left: 10, bottom: 10, right: 10 };
+  const margin = {
+    top: 10,
+    left: 10,
+    bottom: 10,
+    right: 10,
+  };
 
-  div.append("h3").text(title);
+  div.append('h3').text(title);
 
-  const svg = div.append("svg");
-  svg.attr("width", size.width).attr("height", size.height);
+  const svg = div.append('svg');
+  svg.attr('width', size.width).attr('height', size.height);
 
   const x = d3
     .scaleTime()
@@ -51,33 +56,33 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
     .domain(d3.extent(data, getValue))
     .range([size.height - margin.bottom, margin.top]);
 
-  const curve = svg.selectAll("curve").data([data]).join("g");
+  const curve = svg.selectAll('curve').data([data]).join('g');
 
   const line = curve
-    .append("path")
+    .append('path')
     .attr(
-      "d",
+      'd',
       d3
         .line()
         .x((d) => x(d.date))
-        .y((d) => y(+getValue(d)))
+        .y((d) => y(+getValue(d))),
     )
-    .attr("stroke", color)
-    .attr("stroke-width", 3)
-    .attr("fill", "none");
+    .attr('stroke', color)
+    .attr('stroke-width', 3)
+    .attr('fill', 'none');
 
   const area = curve
-    .append("path")
+    .append('path')
     .attr(
-      "d",
+      'd',
       d3
         .area()
         .x((d) => x(d.date))
         .y0(y(0))
-        .y1((d) => y(+getValue(d)))
+        .y1((d) => y(+getValue(d))),
     )
-    .attr("fill-opacity", 0.4)
-    .attr("fill", color);
+    .attr('fill-opacity', 0.4)
+    .attr('fill', color);
 
   // yticks
   // you can do a .forEach to add both a horizontal line and the text above on the line
@@ -97,42 +102,42 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
  * @since 7/30/2021
  */
 const makeVaccineTypes = (data) => {
-  const container = d3.select("#dosesByVaccine-d3");
-  container.selectAll("*").remove();
+  const container = d3.select('#dosesByVaccine-d3');
+  container.selectAll('*').remove();
 
-  container.append("h1").text("plot title");
+  container.append('h1').text('plot title');
 
   const plotArea = container
-    .append("div")
-    .style("display", "flex")
-    .style("justify-content", "center")
-    .style("flex-wrap", "wrap");
+    .append('div')
+    .style('display', 'flex')
+    .style('justify-content', 'center')
+    .style('flex-wrap', 'wrap');
 
-  container.append("p").html("Source: <a href='https://google.com'>test</a>");
+  container.append('p').html("Source: <a href='https://google.com'>test</a>");
 
   //   const colors = d3.scaleOrdinal(d3.schemeTableau10);
   //   console.log(colors.range());
 
-  const pfizerDiv = plotArea.append("div");
+  const pfizerDiv = plotArea.append('div');
   makeSinglePlot(
     pfizerDiv,
     data,
     (d) => d.cumulative_pfizer_doses,
-    "Pfizer",
-    "#4e79a7"
+    'Pfizer',
+    '#4e79a7',
   );
 
-  const modernaDiv = plotArea.append("div");
+  const modernaDiv = plotArea.append('div');
   makeSinglePlot(
     modernaDiv,
     data,
     (d) => d.cumulative_moderna_doses,
-    "Moderna",
-    "#f28e2c"
+    'Moderna',
+    '#f28e2c',
   );
 
-  const jjDiv = plotArea.append("div");
-  makeSinglePlot(jjDiv, data, (d) => d.cumulative_jj_doses, "J&J", "#76b7b2");
+  const jjDiv = plotArea.append('div');
+  makeSinglePlot(jjDiv, data, (d) => d.cumulative_jj_doses, 'J&J', '#76b7b2');
 };
 
 export default makeVaccineTypes;
