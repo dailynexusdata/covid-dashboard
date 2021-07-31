@@ -1,7 +1,10 @@
 /**
  * @file Pfizer, Moderna, Johnson&Johnson cumulative administered doses in SB County.
+ *
  * @author alex rudolph
  * @author zach
+ *
+ * @since 7/30/2021
  */
 import * as d3 from "d3";
 
@@ -15,7 +18,7 @@ import * as d3 from "d3";
  * @param {string} color - color to use for curve
  *
  * @author alex rudolph
- * @complete curves
+ * @complete show curves with colors
  * @author zach
  * @todo x-axis, see link below for formatting
  * @todo y-lines with labels above -- get the values by .ticks(n).slice(1) -- see in example belows
@@ -23,6 +26,8 @@ import * as d3 from "d3";
  *
  * @see {@link https://github.com/dailynexusdata/kcsb-covid/blob/main/plots/ucsbTesting.js see how to do mouse events}
  * @see {@link https://dailynexusdata.github.io/kcsb-covid/vaccines for how it should end up looking (just 1 curve)}, {@link https://github.com/dailynexusdata/kcsb-covid/blob/main/plots/countyVaccines.js for source}
+ *
+ *  @since 7/30/2021
  */
 const makeSinglePlot = (div, data, getValue, title, color) => {
   const size = {
@@ -48,32 +53,38 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
 
   const curve = svg.selectAll("curve").data([data]).join("g");
 
-  const line = d3
-    .line()
-    .x((d) => x(d.date))
-    .y((d) => y(+getValue(d)));
-
-  const curveLine = curve
+  const line = curve
     .append("path")
-    .attr("d", line)
+    .attr(
+      "d",
+      d3
+        .line()
+        .x((d) => x(d.date))
+        .y((d) => y(+getValue(d)))
+    )
     .attr("stroke", color)
     .attr("stroke-width", 3)
     .attr("fill", "none");
 
-  const area = d3
-    .area()
-    .x((d) => x(d.date))
-    .y0(y(0))
-    .y1((d) => y(+getValue(d)));
-
-  const curveArea = curve
+  const area = curve
     .append("path")
-    .attr("d", area)
+    .attr(
+      "d",
+      d3
+        .area()
+        .x((d) => x(d.date))
+        .y0(y(0))
+        .y1((d) => y(+getValue(d)))
+    )
     .attr("fill-opacity", 0.4)
     .attr("fill", color);
 
+  // yticks
+  // you can do a .forEach to add both a horizontal line and the text above on the line
+  console.log(y.ticks(5).slice(1));
+
   // if you want to change the styles on the line or area
-  // such as for mouse over events use curveLine.attr("", ...) or curveArea.attr("", ...)
+  // such as for mouse over events use lin.attr("", ...) or area.attr("", ...)
 };
 
 /**
@@ -82,7 +93,8 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
  * @param {*} data - data/vaccines.csv with date and cumulative individual doses converted
  *
  * @author alex rudolph
- * @complete calls individual plot function for each type
+ *
+ * @since 7/30/2021
  */
 const makeVaccineTypes = (data) => {
   const container = d3.select("#dosesByVaccine-d3");
