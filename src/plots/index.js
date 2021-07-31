@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import "./styles.scss";
 
 import makeVaccineTypes from "./vaccineTypes";
 
