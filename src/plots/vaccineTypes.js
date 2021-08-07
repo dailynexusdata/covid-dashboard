@@ -40,7 +40,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
     height: 250,
   };
   const margin = {
-    top: 30,
+    top: 20,
     left: 10,
     bottom: 30,
     right: 10,
@@ -58,9 +58,11 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
     .domain(d3.extent(data, (d) => d.date))
     .range([margin.left, size.width - margin.right]);
 
+  const yticks = d3.range(0, yMax + 100000 - 1, 100000);
+
   const y = d3
     .scaleLinear()
-    .domain([0, yMax])
+    .domain([0, yticks[yticks.length - 1]])
     .range([size.height - margin.bottom, margin.top]);
 
   const curve = svg.selectAll('curve').data([data]).join('g');
@@ -111,7 +113,6 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
     );
 
   const horizLines = svg.append('g');
-  const yticks = d3.range(0, y.domain()[1] + 100000 - 1, 100000);
 
   yticks.slice(1).forEach((yVal, i) => {
     horizLines
