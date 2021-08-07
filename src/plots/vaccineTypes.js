@@ -109,7 +109,12 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
       }),
   );
   const horizLines = svg.append('g');
-  y.ticks(4).slice(1)
+  let yticks = y.ticks(5);
+  if (yticks.length !== 5) {
+    yticks = d3.range(y.domain()[0], y.domain()[1] + 0.5, (y.domain()[1] - y.domain()[0]) / 4);
+  }
+  console.log(yticks);
+  yticks.slice(1)
     .forEach((yVal, i) => {
       horizLines
         .append('line')
