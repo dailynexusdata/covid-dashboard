@@ -13,6 +13,7 @@ import * as d3 from 'd3';
  *
  * @param {*} div - div for the specific vaccine plot
  * @param {*} data - array of daily data for vaccine numbers
+ // eslint-disable-next-line max-len
  * @param {Function} getValue - get the cumulative number of doses from a single item in data, returns the value for the specified vaccine
  * @param {string} title - vaccine name
  * @param {string} color - color to use for curve
@@ -29,15 +30,20 @@ import * as d3 from 'd3';
  *
  *  @since 7/30/2021
  */
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
 const makeSinglePlot = (div, data, getValue, title, color) => {
   const size = {
     width: 200,
     height: 200,
   };
   const margin = {
-    top: 10,
+    top: 20,
     left: 10,
-    bottom: 10,
+    bottom: 30,
     right: 10,
   };
 
@@ -54,7 +60,8 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
   const y = d3
     .scaleLinear()
     .domain(d3.extent(data, getValue))
-    .range([size.height - margin.bottom, margin.top]);
+    .range([size.height - margin.bottom, margin.top])
+    .nice();
 
   const curve = svg.selectAll('curve').data([data]).join('g');
 
@@ -86,8 +93,41 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
 
   // yticks
   // you can do a .forEach to add both a horizontal line and the text above on the line
-  console.log(y.ticks(5).slice(1));
+  const yAxisLine = svg
+    .append('g')
+    .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
+    .style('font-size', '7pt')
+    .attr('transform', `translate(0, ${size.height - margin.bottom})`);
+  yAxisLine.call(
+    d3
+      .axisBottom()
+      .scale(x)
+      .tickFormat((d) => {
+        const t = d3.timeFormat('%b')(d);
 
+        return t === 'Jan' ? `${t}'21` : t;
+      }),
+  );
+  const horizLines = svg.append('g');
+  y.ticks(4).slice(1)
+    .forEach((yVal, i) => {
+      horizLines
+        .append('line')
+        .attr('x1', margin.left)
+        .attr('x2', size.width - margin.right)
+        .attr('y1', y(yVal))
+        .attr('y2', y(yVal))
+        .attr('stroke', '#d3d3d3')
+        .attr('stroke-width', '0.5px');
+
+      horizLines
+        .append('text')
+        .text(numberWithCommas(yVal))
+        .style('font-size', '10pt')
+        .attr('fill', '#adadad')
+        .attr('x', margin.left)
+        .attr('y', y(yVal) - 5);
+    });
   // if you want to change the styles on the line or area
   // such as for mouse over events use lin.attr("", ...) or area.attr("", ...)
 };
