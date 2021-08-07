@@ -16,6 +16,7 @@ import * as d3 from 'd3';
  * @param {Function} getValue - get the cumulative number of doses from a single item in data, returns the value for the specified vaccine
  * @param {string} title - vaccine name
  * @param {string} color - color to use for curve
+ * @param {number} yMax - max range value for y scale
  *
  * @author alex rudolph
  * @complete show curves with colors
@@ -29,7 +30,7 @@ import * as d3 from 'd3';
  *
  *  @since 7/30/2021
  */
-const makeSinglePlot = (div, data, getValue, title, color) => {
+const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   const size = {
     width: 200,
     height: 200,
@@ -53,7 +54,7 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
 
   const y = d3
     .scaleLinear()
-    .domain(d3.extent(data, getValue))
+    .domain([0, yMax])
     .range([size.height - margin.bottom, margin.top]);
 
   const curve = svg.selectAll('curve').data([data]).join('g');
@@ -99,7 +100,7 @@ const makeSinglePlot = (div, data, getValue, title, color) => {
  *
  * @author alex rudolph
  *
- * @since 7/30/2021
+ * @since 8/2/2021
  */
 const makeVaccineTypes = (data) => {
   const container = d3.select('#dosesByVaccine-d3');
@@ -115,6 +116,11 @@ const makeVaccineTypes = (data) => {
 
   container.append('p').html("Source: <a href='https://google.com'>test</a>");
 
+  const yMax = Math.max(
+    data[data.length - 1].cumulative_moderna_doses,
+    data[data.length - 1].cumulative_pfizer_doses,
+  );
+
   //   const colors = d3.scaleOrdinal(d3.schemeTableau10);
   //   console.log(colors.range());
 
@@ -125,6 +131,7 @@ const makeVaccineTypes = (data) => {
     (d) => d.cumulative_pfizer_doses,
     'Pfizer',
     '#4e79a7',
+    yMax,
   );
 
   const modernaDiv = plotArea.append('div');
@@ -134,10 +141,18 @@ const makeVaccineTypes = (data) => {
     (d) => d.cumulative_moderna_doses,
     'Moderna',
     '#f28e2c',
+    yMax,
   );
 
   const jjDiv = plotArea.append('div');
-  makeSinglePlot(jjDiv, data, (d) => d.cumulative_jj_doses, 'J&J', '#76b7b2');
+  makeSinglePlot(
+    jjDiv,
+    data,
+    (d) => d.cumulative_jj_doses,
+    'J&J',
+    '#76b7b2',
+    yMax,
+  );
 };
 
 export default makeVaccineTypes;

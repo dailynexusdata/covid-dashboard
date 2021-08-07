@@ -12,10 +12,15 @@ import numpy as np
 # print(probable_cases)
 
 vaccines = pd.read_csv("https://data.chhs.ca.gov/dataset/e283ee5a-cf18-4f20-a92c-ee94a2866ccd/resource/130d7ba2-b6eb-438d-a412-741bde207e1c/download/covid19vaccinesbycounty.csv")
+
+all_counties_vaccines = vaccines[["county", "cumulative_total_doses", "administered_date"]]
+all_counties_vaccines["date"] = pd.to_datetime(all_counties_vaccines["administered_date"])
+all_counties_vaccines \
+    .sort_values(by=["county", "date"]) \
+    .to_csv("dist/data/ca_vaccines.csv", index=False)
+
 vaccines = vaccines[vaccines["county"] == "Santa Barbara"]
-
 vaccines["date"] = pd.to_datetime(vaccines["administered_date"])
-
 vaccines \
     .drop("county", axis=1) \
     .sort_values(by="date") \
