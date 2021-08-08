@@ -114,7 +114,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
   const horizLines = svg.append('g');
 
-  yticks.slice(1).forEach((yVal, i) => {
+  yticks.slice(1).forEach((yVal) => {
     horizLines
       .append('line')
       .attr('x1', margin.left)
@@ -144,7 +144,8 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
  * @param {*} div
  * @param {{width: number, height: number}} size - plotting area dimensions
  * @param {*} data - total number of doses at most recent date
- * @param {*} colors
+ * @param {*} colors - dictionary for vaccine color
+ * @param {*} labels - dictionary for vaccine label name
  *
  * @author alex rudolph
  *
@@ -154,7 +155,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
   const plotData = { ...data };
   delete plotData.date;
 
-  const total = d3.sum(Object.values(plotData));
+  const total = d3.sum(Object.keys(labels).map((key) => plotData[key]));
 
   Object.keys(plotData).forEach((key) => {
     plotData[key] /= total;
@@ -234,7 +235,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
  *
  * @author alex rudolph
  *
- * @since 8/2/2021
+ * @since 8/7/2021
  */
 const makeVaccineTypes = (data) => {
   const container = d3.select('#dosesByVaccine-d3');
@@ -242,10 +243,13 @@ const makeVaccineTypes = (data) => {
 
   container.append('h1').text('Santa Barbara County Vaccinations');
 
+  container.append('p').text('here is stuff');
+
   const barArea = container
     .append('div')
     .style('width', container.style('width'));
 
+  container.append('p').text('here is stuff');
   const plotArea = container
     .append('div')
     .style('display', 'flex')
