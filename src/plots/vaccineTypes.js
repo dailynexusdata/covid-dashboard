@@ -247,7 +247,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
     left: 0,
     top: 10,
     right: 0,
-    botom: 10,
+    bottom: 10,
   };
   const svg = div.append('svg');
 
@@ -255,7 +255,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
 
   const x = d3.scaleLinear().range([margin.left, size.width - margin.right]);
 
-  const y = size.height / 2;
+  const y = size.height / 2 - 15;
 
   const bars = svg
     .selectAll('rect')
@@ -299,6 +299,24 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .style('font-weight', 'bold')
     .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])
     .text((d) => labels[d.key]);
+
+  /**
+   * @todo Add total numbers for vaccines
+   *
+   */
+  bars
+    .append('text')
+    .attr('x', (d, i) => {
+      if (i !== 2) {
+        return x(d[0]) + 5;
+      }
+      return x(d[1]);
+    })
+    .attr('y', y - 5)
+    .attr('fill', (d) => colors[d.key])
+    .style('font-weight', 'bold')
+    .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])
+    .text((d) => labels[d.key]); // change the text
 };
 
 /**
@@ -346,7 +364,7 @@ const makeVaccineTypes = (data) => {
   vaccinePct(
     barArea,
     {
-      height: 50,
+      height: 75,
       width: +container.style('width').slice(0, -2),
     },
     data[data.length - 1],
