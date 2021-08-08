@@ -136,6 +136,80 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   curve.raise();
   // if you want to change the styles on the line or area
   // such as for mouse over events use lin.attr("", ...) or area.attr("", ...)
+
+  const hoverOver = svg.append('g');
+
+  const comma = d3.format(',');
+  const monthAbbr = d3.timeFormat('%B');
+  const dayNumber = d3.timeFormat('%d');
+
+  const makeLine = (dat) => {
+    hoverOver.selectAll('*').remove();
+
+    hoverOver
+      .append('line')
+      .attr('x1', x(dat.date))
+      .attr('x2', x(dat.date))
+      .attr('y1', y(0))
+      .attr('y2', y(getValue(dat)))
+      .attr('stroke-width', 2)
+      .attr('stroke', 'black')
+      .style('stroke-dasharray', '3, 3');
+
+    const flip = x(dat.date) > size.width / 2;
+
+    hoverOver
+      .append('text')
+      .text(`${monthAbbr(dat.date)} ${+dayNumber(dat.date)}`)
+      .attr('x', x(dat.date))
+      .attr('y', y(getValue(dat)) - 20)
+      .attr('text-anchor', flip ? 'end' : 'start')
+      .attr('pointer-events', 'none');
+
+    hoverOver
+      .append('text')
+      .text(`# Doses: ${comma(getValue(dat))}`)
+      .attr('x', x(dat.date))
+      .attr('y', y(getValue(dat)) - 5)
+      .attr('text-anchor', flip ? 'end' : 'start')
+      .attr('pointer-events', 'none');
+
+    hoverOver
+      .append('circle')
+      .attr('cx', x(dat.date))
+      .attr('cy', y(getValue(dat)))
+      .attr('r', 3);
+  };
+
+  svg.on('mouseenter touchstart', () => {
+    svg.on('mousemove touchout', (event) => {
+      line.attr('stroke-opacity', 0.4);
+      area.attr('fill-opacity', 0.1);
+
+      const mouseX = d3.pointer(event)[0];
+
+      const xVal = x.invert(mouseX);
+
+      // ill make a better thing later
+      const closestPoint = data.reduce((best, curr) => {
+        if (
+          Math.abs(best.date.getTime() - xVal.getTime()) <
+          Math.abs(curr.date.getTime() - xVal.getTime())
+        ) {
+          return best;
+        }
+        return curr;
+      });
+
+      makeLine(closestPoint);
+    });
+
+    svg.on('mouseleave touchend', () => {
+      line.attr('stroke-opacity', 1);
+      area.attr('fill-opacity', 0.4);
+      hoverOver.selectAll('*').remove();
+    });
+  });
 };
 
 /**
@@ -175,7 +249,6 @@ const vaccinePct = (div, size, data, colors, labels) => {
     right: 0,
     botom: 10,
   };
-
   const svg = div.append('svg');
 
   svg.attr('height', size.height).attr('width', size.width);

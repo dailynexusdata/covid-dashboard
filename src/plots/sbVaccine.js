@@ -7,6 +7,10 @@
  */
 import * as d3 from 'd3';
 
+const makePlot = () => {
+  // what actually makes the plot
+};
+
 /**
  *
  * @param {*} data - plot data
@@ -23,6 +27,19 @@ import * as d3 from 'd3';
 const sbVaccines = (data) => {
   const container = d3.select('#sbCouty-vaccines-d3');
 
+  const svg = container.append('svg');
+
+  window.addEventListener('resize', () => {
+    svg.selectAll('*').remove();
+    makePlot(svg, data);
+  });
+
+  const size = {
+    height: 400,
+    width: Math.min(600, +container.style('width').slice(0, -2)),
+  };
+
+  makePlot(svg, data);
   // columns we want:
   // > date
   // > cumulative_at_least_one_dose

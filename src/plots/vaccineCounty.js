@@ -78,7 +78,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     if (s === 'California') {
       // UGHHHHHHHHHHHHHHHHHHHHHHHHHHH
       // I DONT LIKE THIS COLOR
-      return '#af7aa1';
+      return '#f28e2c'; // af7aa1;
     }
     if (s === 'Santa Barbara') {
       return '#4e79a7';

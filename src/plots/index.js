@@ -5,6 +5,12 @@ import makeVaccineTypes from './vaccineTypes';
 import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
 
+/**
+ *
+ * Good to checkout:
+ * https://www.latimes.com/projects/california-coronavirus-cases-tracking-outbreak/covid-19-vaccines-distribution/
+ */
+
 (async () => {
   const convertTime = d3.timeParse('%Y-%m-%d');
 

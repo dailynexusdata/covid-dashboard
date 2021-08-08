@@ -17,6 +17,8 @@ import * as d3 from 'd3';
  */
 const sbDailyCases = (data) => {
   const container = d3.select('#sbCounty-dailyCases-d3');
+
+  console.log(data);
 };
 
 export default sbDailyCases;
