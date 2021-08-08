@@ -48,7 +48,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
   div.style('margin', '10px 0');
 
-  div.append('h3').text(`Total ${title} Doses`).style('margin', '0 0 0 5px');
+  div.append('h3').text(`${title} Doses`).style('margin', '0 0 0 5px');
 
   const svg = div.append('svg');
   svg.attr('width', size.width).attr('height', size.height);
