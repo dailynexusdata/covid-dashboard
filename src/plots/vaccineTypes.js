@@ -190,16 +190,10 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
       const xVal = x.invert(mouseX);
 
-      // ill make a better thing later
-      const closestPoint = data.reduce((best, curr) => {
-        if (
-          Math.abs(best.date.getTime() - xVal.getTime()) <
-          Math.abs(curr.date.getTime() - xVal.getTime())
-        ) {
-          return best;
-        }
-        return curr;
-      });
+      const closestTime = d3
+        .timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal))
+        .getTime();
+      const closestPoint = data.find((d) => d.date.getTime() === closestTime);
 
       makeLine(closestPoint);
     });
@@ -312,7 +306,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
       }
       return x(d[1]);
     })
-    .attr('y', y - 5)
+    .attr('y', y - 5) // increase the y so that the text is under
     .attr('fill', (d) => colors[d.key])
     .style('font-weight', 'bold')
     .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])

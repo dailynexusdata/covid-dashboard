@@ -4,6 +4,7 @@ import './styles.scss';
 import makeVaccineTypes from './vaccineTypes';
 import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
+import makeDeathsCounty from './deathsCounties';
 
 /**
  *
@@ -38,10 +39,18 @@ import makeSbVaccines from './sbVaccine';
     population: +d.population,
   }));
 
+  const countyDeathData = await d3.csv('dist/data/deaths.csv', (d) => ({
+    ...d,
+    date: convertTime(d.date),
+    population: +d.population,
+    cumulative_reported_deaths: +d.cumulative_reported_deaths,
+  }));
+
   const resize = () => {
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);
     makeSbVaccines(vaccineData);
+    makeDeathsCounty(countyDeathData);
   };
 
   window.addEventListener('resize', () => {
