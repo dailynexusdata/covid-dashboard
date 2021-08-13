@@ -49,7 +49,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     left: 10,
     top: 10,
     right: 10,
-    bottom: 10,
+    bottom: 30,
   };
 
   const nestedData = d3Collection
@@ -109,14 +109,46 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     .append('path')
     .attr('d', (d) => line(d.values))
     .attr('stroke', (d) => color(d.key))
-    .attr('stroke-width', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 3 : 1,
-    )
-    .attr('stroke-opacity', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5,
-    )
+    .attr('stroke-width', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 3 : 1))
+    .attr('stroke-opacity', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5))
     .attr('fill', 'none');
 
+  svg
+    .append('g')
+    .style('color', '#adadad')
+    .style('font-size', '12pt')
+    .attr('transform', `translate(0, ${size.height - margin.bottom})`)
+    .call(
+      d3
+        .axisBottom()
+        .scale(x)
+        .ticks(4)
+        .tickFormat((d) => {
+          const t = d3.timeFormat('%b')(d);
+          return t === 'Jan' ? `${t} '21` : t;
+        }),
+    );
+  console.log(y(0));
+  const yticks = d3.range(0, 1, 0.2);
+  const horizLines = svg.append('g');
+  yticks.slice(1).forEach((yVal) => {
+    horizLines
+      .append('line')
+      .attr('x1', margin.left)
+      .attr('x2', size.width - margin.right)
+      .attr('y1', y(yVal))
+      .attr('y2', y(yVal))
+      .attr('stroke', '#d3d3d3')
+      .attr('stroke-width', '0.5px');
+
+    horizLines
+      .append('text')
+      .text(d3.format('.0%')(yVal))
+      .style('font-size', '10pt')
+      .attr('fill', '#adadad')
+      .attr('x', margin.left)
+      .attr('y', y(yVal) - 5);
+  });
   const endLabelsValues = firstLast(
     nestedData
       .map((d) => {
