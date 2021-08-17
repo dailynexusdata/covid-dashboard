@@ -19,7 +19,7 @@ import * as d3Collection from 'd3-collection';
 const makePlot = (container, data) => {
   const size = {
     height: 400,
-    width: 600,
+    width: Math.min(600, window.innerWidth - 40),
   };
 
   const margin = {
@@ -110,6 +110,7 @@ const makePlot = (container, data) => {
  */
 const deathsCounties = (data) => {
   const container = d3.select('#deathsByCounty-d3');
+  container.selectAll('*').remove();
 
   container.append('h1').text('County Death Rate');
 

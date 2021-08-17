@@ -243,6 +243,11 @@ const vaccinePct = (div, size, data, colors, labels) => {
     right: 0,
     bottom: 10,
   };
+  div
+    .style('width', '100%')
+    .style('display', 'flex')
+    .style('justify-content', 'center');
+
   const svg = div.append('svg');
 
   svg.attr('height', size.height).attr('width', size.width);

@@ -1,0 +1,174 @@
+{
+	// Place your template workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"D3 Size Object": {
+		"scope": "javascript",
+		"prefix": "const size = ",
+		"body": [
+			"const size = {",
+			"  height: 400,",
+			"  width: Math.min(600, window.innerWidth - 40),",
+			"};",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"D3 Margin Default Object": {
+		"scope": "javascript",
+		"prefix": "const margin = ",
+		"body": [
+			"const margin = {",
+			"  top: 10,",
+			"  right: 10,",
+			"  bottom: 10,",
+			"  left: 10,",
+			"};",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"D3 Svg Object": {
+		"scope": "javascript",
+		"prefix": "const svg = ",
+		"body": [
+			"const svg = container",
+			"  .append('svg')",
+			"  .attr('height', size.height)",
+			"  .attr('width', size.width);",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"D3 Line Object": {
+		"scope": "javascript",
+		"prefix": "d3.line()",
+		"body": [
+			"d3",
+			"  .line()",
+			"  .x((d) => x(d.$1))",
+			"  .y((d) => y(d.$2));",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"D3 Area Object": {
+		"scope": "javascript",
+		"prefix": "d3.area()",
+		"body": [
+			"d3",
+			"  .area()",
+			"  .x((d) => x(d.$1))",
+			"  .y0((d) => y(d.$2))",
+			"  .y1((d) => y(d.$3));",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"D3 Stack Object": {
+		"scope": "javascript",
+		"prefix": "d3.stack()",
+		"body": [
+			"d3",
+			"  .stack()",
+			"  .keys([])",
+			"  .value((d, key) => $1)(${2:data})",
+			"",
+			"$0"
+		],
+		"description": "D3 Size Object"
+	},
+	"d3 starter": {
+		"scope": "javascript",
+		"prefix": "start",
+		"body": [
+			"/**",
+			" * ${1:File Description}",
+			" *",
+			" * @author ${2:Name}",
+			" *",
+			" */",
+			"import * as d3 from 'd3';",
+			"",
+			"/**",
+			" * @param {*} data - ${3:What is the data?}",
+			" *",
+			" * @author ${2:Name}",
+			" *",
+			" * @since ${4:Date}",
+			" */",
+			"const makePlot = (data) => {",
+			"  /*",
+			"    Container Setup:",
+			"  */",
+			"",
+			"  // The class is necessary to apply styling",
+			"  const container = d3.select('#${5:div-id}').attr('class', 'myclass');",
+			"",
+			"  // When the resize event is called, reset the plot",
+			"  container.selectAll('*').remove();",
+			"",
+			"  container.append('h1').text('My title');",
+			"",
+			"  const size = {",
+			"    height: 400,",
+			"    width: Math.min(600, window.innerWidth - 40),",
+			"  };",
+			"",
+			"  const margin = {",
+			"    top: 10,",
+			"    right: 10,",
+			"    bottom: 10,",
+			"    left: 10,",
+			"  };",
+			"",
+			"  const svg = container",
+			"    .append('svg')",
+			"    .attr('height', size.height)",
+			"    .attr('width', size.width);",
+			"",
+			"  container",
+			"    .append('a')",
+			"    .text('Source: __________')",
+			"    .attr('href', '');",
+			"",
+			"  /*",
+			"    Create Scales:",
+			"  */",
+			"",
+			"  const x = d3",
+			"    .scaleLinear()",
+			"    .domain([0, 1])",
+			"    .range([margin.left, size.width - margin.right]);",
+			"",
+			"  const y = d3",
+			"    .scaleLinear()",
+			"    .domain([0, 1])",
+			"    .range([size.height - margin.bottom, margin.top]);",
+			"",
+			"  /*",
+			"    Start Plot:",
+			"  */",
+			"  $0",
+			"};",
+			"",
+			"export default makePlot;",
+			""
+		],
+		"description": ""
+	}
+}
+// d3 nest, all the functoinal js
+// d3 styles and attr options
+// setup for line plots, bar plots
+// things like alignment-baseline, text-anchor, stroke dash, triangles- maybe?
+// checkout: https://snippet-generator.app/
