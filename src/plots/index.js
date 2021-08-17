@@ -5,6 +5,7 @@ import makeVaccineTypes from './vaccineTypes';
 import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
 import makeDeathsCounty from './deathsCounties';
+import makeVaccinesZip from './vaccinesZip';
 
 /**
  *
@@ -46,11 +47,17 @@ import makeDeathsCounty from './deathsCounties';
     cumulative_reported_deaths: +d.cumulative_reported_deaths,
   }));
 
+  const zipData = await d3.json('dist/data/sbzips.json');
+
   const resize = () => {
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);
     makeSbVaccines(vaccineData);
     makeDeathsCounty(countyDeathData);
+
+    // map chart
+    // comment out the above 4 lines to test just this
+    makeVaccinesZip(zipData);
   };
 
   window.addEventListener('resize', () => {
