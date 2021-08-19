@@ -95,9 +95,9 @@ const makeSbVaccines = (data) => {
     // ])
       .tickFormat((d) => {
         const t = d3.timeFormat('%b')(d);
-
         return t === 'Jan' ? `${t}'21` : t;
       }),
+
   );
 
   yAxisLine.select('.domain').attr('stroke-width', 0);
