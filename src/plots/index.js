@@ -24,8 +24,8 @@ import makeVaccinesZip from './vaccinesZip';
       cumulative_pfizer_doses: +d.cumulative_pfizer_doses,
       cumulative_moderna_doses: +d.cumulative_moderna_doses,
       cumulative_jj_doses: +d.cumulative_jj_doses,
-      cumulative_fully_vaccinated: +d.cumulative_fully_vaccinated,
-      cumulative_at_least_one_dose: +d.cumulative_at_least_one_dose,
+      fullPct: +d.cumulative_fully_vaccinated / +d.population,
+      singlePct: +d.cumulative_at_least_one_dose / +d.population,
       population: +d.population,
     }),
   );

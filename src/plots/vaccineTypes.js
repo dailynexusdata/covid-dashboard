@@ -40,7 +40,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
     height: 250,
   };
   const margin = {
-    top: 20,
+    top: 35,
     left: 10,
     bottom: 30,
     right: 10,
