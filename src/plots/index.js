@@ -16,6 +16,21 @@ import makeVaccinesZip from './vaccinesZip';
 (async () => {
   const convertTime = d3.timeParse('%Y-%m-%d');
 
+  d3.select('#sbCounty-vaccines-d3')
+    .style('max-width', '600px')
+    .style('margin', '0 10px')
+    .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
+    .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
+  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through July 2021</h1>
+</div>
+<div id="vaccineLegend"></div>
+<svg id="vaccinePlot" style="align-self: center"></svg>
+<div class="footer">
+  <!-- <p>Chart: Alex Rudolph / Daily Nexus </p> -->
+  <p style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+          Agency</a></p>
+</div>`);
   const vaccineData = await d3.csv(
     'dist/data/vaccines.csv',
     // 'https://raw.githubusercontent.com/dailynexusdata/covid-dashboard/main/dist/data/vaccines.csv',
@@ -24,8 +39,8 @@ import makeVaccinesZip from './vaccinesZip';
       cumulative_pfizer_doses: +d.cumulative_pfizer_doses,
       cumulative_moderna_doses: +d.cumulative_moderna_doses,
       cumulative_jj_doses: +d.cumulative_jj_doses,
-      cumulative_fully_vaccinated: +d.cumulative_fully_vaccinated,
-      cumulative_at_least_one_dose: +d.cumulative_at_least_one_dose,
+      fullPct: +d.cumulative_fully_vaccinated,
+      singlePct: +d.cumulative_at_least_one_dose,
       population: +d.population,
     }),
   );
