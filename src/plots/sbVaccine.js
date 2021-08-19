@@ -21,7 +21,36 @@ import * as d3 from 'd3';
  * @since 8/8/2021
  */
 
-const makePlot = (data) => {
+const closeVaccines = () => {
+  d3.selectAll('.vaccineLegends').style('opacity', 1);
+  d3.selectAll('.vaccineLine').style('stroke-width', 5);
+  d3.selectAll('.vaccineEndLabel').style('fill-opacity', 1);
+  d3.selectAll('.vaccineArea').style('fill-opacity', 0.5);
+  const hoverOver = d3.select('#vaccineHoverOver');
+  hoverOver.style('fill-opacity', 1);
+  hoverOver.style('stroke-opacity', 1);
+};
+
+// https://experience.arcgis.com/experience/030e625c69a04378b2756de161f82ef6
+// Variant Surveillance
+
+const makeSbVaccines = (data) => {
+  d3.select('#sbCounty-vaccines-d3')
+    .style('max-width', '600px')
+    .style('margin', '0 10px')
+    .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
+    .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
+  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through July 2021</h1>
+</div>
+<div id="vaccineLegend"></div>
+<svg id="vaccinePlot" style="align-self: center"></svg>
+<div class="footer">
+  <!-- <p>Chart: Alex Rudolph / Daily Nexus </p> -->
+  <p style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+          Agency</a></p>
+</div>`);
+
   const color = {
     Partial: '#E15759',
     Full: '#4E79A7',
@@ -49,7 +78,6 @@ const makePlot = (data) => {
     .scaleTime()
     .domain(d3.extent(data, (d) => d.date))
     .range([margin.left, size.width - margin.right]);
-
   const yAxisLine = svg
     .append('g')
     .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
@@ -462,39 +490,6 @@ const makePlot = (data) => {
 
   //   console.log(idx);
   // });
-};
-
-const closeVaccines = () => {
-  d3.selectAll('.vaccineLegends').style('opacity', 1);
-  d3.selectAll('.vaccineLine').style('stroke-width', 5);
-  d3.selectAll('.vaccineEndLabel').style('fill-opacity', 1);
-  d3.selectAll('.vaccineArea').style('fill-opacity', 0.5);
-  const hoverOver = d3.select('#vaccineHoverOver');
-  hoverOver.style('fill-opacity', 1);
-  hoverOver.style('stroke-opacity', 1);
-};
-
-// https://experience.arcgis.com/experience/030e625c69a04378b2756de161f82ef6
-// Variant Surveillance
-
-const makeSbVaccines = (data) => {
-  d3.select('#sbCounty-vaccines-d3')
-    .style('max-width', '600px')
-    .style('margin', '0 10px')
-    .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
-    .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
-  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through July 2021</h1>
-</div>
-<div id="vaccineLegend"></div>
-<svg id="vaccinePlot" style="align-self: center"></svg>
-<div class="footer">
-  <!-- <p>Chart: Alex Rudolph / Daily Nexus </p> -->
-  <p style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
-          Agency</a></p>
-</div>`);
-
-  makePlot(data);
 };
 
 export default makeSbVaccines;
