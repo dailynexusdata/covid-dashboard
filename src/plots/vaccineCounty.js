@@ -42,7 +42,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
 
   const size = {
     height: 400,
-    width: 300,
+    width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
   };
 
   const margin = {

@@ -91,12 +91,8 @@ const makePlot = (container, data) => {
     .append('path')
     .attr('d', (d) => line(d.values))
     .attr('stroke', (d) => color(d.key))
-    .attr('stroke-width', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 3 : 1,
-    )
-    .attr('stroke-opacity', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5,
-    )
+    .attr('stroke-width', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 3 : 1))
+    .attr('stroke-opacity', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5))
     .attr('fill', 'none');
 };
 
