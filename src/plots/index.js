@@ -6,6 +6,7 @@ import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
 import makeDeathsCounty from './deathsCounties';
 import makeVaccinesZip from './vaccinesZip';
+import makeDailyCases from './sbDailyCases';
 
 import makeAges from './ages';
 
@@ -21,6 +22,12 @@ import makePrintTable from './printTable';
 
 (async () => {
   const convertTime = d3.timeParse('%Y-%m-%d');
+
+  const caseData = await d3.csv('dist/data/dailyCases.csv', (d) => ({
+    date: convertTime(d.date),
+    cases: +d.cases,
+    avg: +d.avg,
+  }));
 
   const vaccineData = await d3.csv(
     'dist/data/vaccines.csv',
