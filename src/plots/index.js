@@ -7,6 +7,12 @@ import makeSbVaccines from './sbVaccine';
 import makeDeathsCounty from './deathsCounties';
 import makeVaccinesZip from './vaccinesZip';
 
+import makeAges from './ages';
+
+import makePrintCasesVariants from './printCasesVariants';
+import makePrintIvCases from './printIvCases';
+import makePrintTable from './printTable';
+
 /**
  *
  * Good to checkout:
@@ -30,8 +36,6 @@ import makeVaccinesZip from './vaccinesZip';
     }),
   );
 
-  console.log(vaccineData.columns);
-
   const countyVaccineData = await d3.csv('dist/data/ca_vaccines.csv', (d) => ({
     ...d,
     date: convertTime(d.date),
@@ -47,6 +51,34 @@ import makeVaccinesZip from './vaccinesZip';
     cumulative_reported_deaths: +d.cumulative_reported_deaths,
   }));
 
+  const countyVariantData = await d3.csv('dist/data/variants.csv', (d) => {
+    const output = {};
+
+    Object.entries(d).forEach(([key, val]) => {
+      output[key] = key !== 'date' ? +val : convertTime(val);
+    });
+
+    return output;
+  });
+
+  const countyAgeData = await d3.csv('dist/data/ages.csv', (d) => ({
+    group: d.demographic_value,
+    pct: +d.partialPct,
+    date: convertTime(d.date),
+  }));
+
+  const countyCases = await d3.csv('dist/data/dailyCases.csv', (d) => ({
+    date: convertTime(d.date),
+    cases: +d.cases,
+    avg: +d.avg,
+  }));
+
+  const ivCases = await d3.csv('dist/data/ivcases.csv', (d) => ({
+    date: convertTime(d.date),
+    cases: +d.cases,
+    avg: +d.avg,
+  }));
+
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
@@ -54,6 +86,11 @@ import makeVaccinesZip from './vaccinesZip';
     makeVaccineCounty(countyVaccineData);
     makeSbVaccines(vaccineData);
     makeDeathsCounty(countyDeathData);
+    makePrintIvCases(ivCases);
+
+    makePrintCasesVariants(countyCases, countyVariantData);
+    makeAges(countyAgeData);
+    makePrintTable();
 
     // map chart
     // comment out the above 4 lines to test just this
