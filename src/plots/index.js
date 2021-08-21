@@ -50,10 +50,10 @@ import makeVaccinesZip from './vaccinesZip';
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
-    makeVaccineTypes(vaccineData);
-    makeVaccineCounty(countyVaccineData);
-    makeSbVaccines(vaccineData);
-    makeDeathsCounty(countyDeathData);
+ //   makeVaccineTypes(vaccineData);
+ //   makeVaccineCounty(countyVaccineData);
+ //   makeSbVaccines(vaccineData);
+ //   makeDeathsCounty(countyDeathData);
 
     // map chart
     // comment out the above 4 lines to test just this

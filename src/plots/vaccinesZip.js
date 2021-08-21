@@ -32,9 +32,9 @@ const makePlot = (data) => {
 
   const margin = {
     top: 50,
-    right: 30,
+    right: 80,
     bottom: 80,
-    left: 0,
+    left: 80,
   };
 
   const scaleContainer = container
@@ -217,11 +217,129 @@ const makePlot = (data) => {
   // lowest zip
   const casmaliaAntonio = projection([-120.53769, 34.83195]);
   const casmaliaZip = 93429;
+  const casData = data.features.find(
+    (d) => casmaliaZip === +d.properties.zip,
+  ).properties;
+
+  annotation 
+    .append('circle')
+    .attr('cx', casmaliaAntonio[0])
+    .attr('cy', casmaliaAntonio[1])
+    .attr('r', 4);
+  const casmaliaLine = 25
+  annotation
+    .append('line')
+    .attr('x1', casmaliaAntonio[0])
+    .attr('x2', casmaliaAntonio[0])
+    .attr('y1', casmaliaAntonio[1])
+    .attr('y2', casmaliaAntonio[1] + casmaliaLine)
+    .style('stroke-dasharray', '1, 2')
+    .style('stroke', 'black');
+
+  annotation
+    .append('text')
+    .text('Casmalia and')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'end')
+    .attr('x', casmaliaAntonio[0] - 5)
+    .attr('y', casmaliaAntonio[1] + casmaliaLine - 8);
+
+  annotation
+    .append('text')
+    .text('Antonio have the')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'end')
+    .attr('x', casmaliaAntonio[0] - 5)
+    .attr('y', casmaliaAntonio[1] + casmaliaLine - 8 + 12);
+
+  annotation
+    .append('text')
+    .text('lowest vaccination')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'end')
+    .attr('x', casmaliaAntonio[0] - 5)
+    .attr('y', casmaliaAntonio[1] + casmaliaLine - 8 + 24);
+
+  annotation
+    .append('text')
+    .text('rate, with only')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'end')
+    .attr('x', casmaliaAntonio[0] - 5)
+    .attr('y', casmaliaAntonio[1] + casmaliaLine - 8 + 36);
+  
+    annotation
+    .append('text')
+    .text(`${Math.round(casData.vacPct * 100)}% vaccinated`)
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'end')
+    .attr('x', casmaliaAntonio[0] - 5)
+    .attr('y', casmaliaAntonio[1] + casmaliaLine - 8 + 48);
 
   // highest zip
   // this is a really small shape - make sure we dont cover
   const carpinteria = projection([-119.59384, 34.42478]);
   const carpinteriaZip = 93067;
-};
+  const carpData = data.features.find(
+    (d) => carpinteriaZip === +d.properties.zip,
+  ).properties;
+
+  annotation 
+    .append('circle')
+    .attr('cx', carpinteria[0] - 2)
+    .attr('cy', carpinteria[1] - 2)
+    .attr('r', 3);
+  const carpinteriaLine = 100
+
+  annotation
+    .append('line')
+    .attr('x1', carpinteria[0] - 2)
+    .attr('x2', carpinteria[0])
+    .attr('y1', carpinteria[1] - 2)
+    .attr('y2', carpinteria[1] - carpinteriaLine)
+    .style('stroke-dasharray', '1, 2')
+    .style('stroke', 'black');
+
+  annotation
+    .append('text')
+    .text('The zip code for')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'start')
+    .attr('x', carpinteria[0] - 25)
+    .attr('y', carpinteria[1] - carpinteriaLine - 48);
+
+  annotation
+    .append('text')
+    .text(`Carpinteria has ${Math.round(carpData.vacPct * 100)}%`)
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'start')
+    .attr('x', carpinteria[0] - 25)
+    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 12);
+
+  annotation
+    .append('text')
+    .text('people vaccinated, the')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'start')
+    .attr('x', carpinteria[0] - 25)
+    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 24)
+
+  annotation
+    .append('text')
+    .text('highest in the area')
+    .attr('alignment-baseline', 'hanging')
+    .style('font-size', '12px')
+    .attr('text-anchor', 'start')
+    .attr('x', carpinteria[0] - 25)
+    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 36)
+  };
 
 export default makePlot;
