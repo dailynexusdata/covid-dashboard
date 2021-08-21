@@ -4,6 +4,3 @@ node_Modules
 out
 *.zip
 tl_2019_us_zcta510
-print
-*.svg
-src/ivcases.csv
