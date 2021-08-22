@@ -6,6 +6,7 @@ import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
 import makeDeathsCounty from './deathsCounties';
 import makeVaccinesZip from './vaccinesZip';
+import makeDailyCases from './sbDailyCases';
 
 /**
  *
@@ -15,6 +16,12 @@ import makeVaccinesZip from './vaccinesZip';
 
 (async () => {
   const convertTime = d3.timeParse('%Y-%m-%d');
+
+  const caseData = await d3.csv('dist/data/dailyCases.csv', (d) => ({
+    date: convertTime(d.date),
+    cases: +d.cases,
+    avg: +d.avg,
+  }));
 
   const vaccineData = await d3.csv(
     'dist/data/vaccines.csv',
@@ -50,10 +57,18 @@ import makeVaccinesZip from './vaccinesZip';
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
+<<<<<<< HEAD
  //   makeVaccineTypes(vaccineData);
  //   makeVaccineCounty(countyVaccineData);
  //   makeSbVaccines(vaccineData);
  //   makeDeathsCounty(countyDeathData);
+=======
+    makeVaccineTypes(vaccineData);
+    makeVaccineCounty(countyVaccineData);
+    makeSbVaccines(vaccineData);
+    makeDeathsCounty(countyDeathData);
+    makeDailyCases(caseData);
+>>>>>>> a4fef8b53df21112350345b1293ea46fab86a804
 
     // map chart
     // comment out the above 4 lines to test just this
