@@ -38,8 +38,8 @@ const makeDailyCases = (data) => {
     bottom: 25,
     left: 10,
   };
-
-  const svg = container
+  const hoverArea = container.append('div').style('position', 'relative');
+  const svg = hoverArea
     .append('svg')
     .attr('height', size.height)
     .attr('width', size.width);
@@ -94,6 +94,18 @@ const makeDailyCases = (data) => {
       .attr('x', margin.left)
       .attr('y', y(yVal) - 5);
   });
+
+  // Tooltip
+
+  const tooltip = hoverArea
+    .append('div')
+    .style('display', 'none')
+    .style('pointer-events', 'none')
+    .style('position', 'absolute')
+    .style('background-color', 'white')
+    .style('padding', '10px')
+    .style('border-radius', '10px')
+    .style('border', '1px solid #d3d3d3');
   /*
      Start Plot:
    */
@@ -126,6 +138,31 @@ const makeDailyCases = (data) => {
     .attr('stroke', '#D96942')
     .attr('stroke-width', 2)
     .attr('fill', 'none');
+
+  svg.on('mousemove', (event) => {
+    const mouseX = d3.pointer(event)[0];
+
+    const xVal = x.invert(mouseX);
+    const closestTime = d3
+      .timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal))
+      .getTime();
+
+    const closestPoint = data.find((d) => d.date.getTime() === closestTime);
+    tooltip.style('display', 'block');
+    tooltip
+      .style('width', '100px')
+      .style('font-size', '10px')
+      .style('left', `${Math.min(mouseX, size.width - 150)}px`)
+      .style('top', `${y(closestPoint.cases) - 75}px`)
+      .html(
+        `<h3>Date: ${d3.timeFormat('%b %d, %g')(closestPoint.date)}</h3><h3> Cases: ${closestPoint.cases}</h3> <h3> 7-day Average: ${d3.format(',.2f')(closestPoint.avg)}</h3><hr style="margin: 3px 0;"/>`,
+      );
+  });
+
+  svg.on('mouseleave', function () {
+    d3.select(this).attr('stroke-width', 1);
+    tooltip.style('display', 'none');
+  });
 };
 
 export default makeDailyCases;

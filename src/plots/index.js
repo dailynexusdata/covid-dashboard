@@ -57,18 +57,11 @@ import makeDailyCases from './sbDailyCases';
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
-<<<<<<< HEAD
- //   makeVaccineTypes(vaccineData);
- //   makeVaccineCounty(countyVaccineData);
- //   makeSbVaccines(vaccineData);
- //   makeDeathsCounty(countyDeathData);
-=======
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);
     makeSbVaccines(vaccineData);
     makeDeathsCounty(countyDeathData);
     makeDailyCases(caseData);
->>>>>>> a4fef8b53df21112350345b1293ea46fab86a804
 
     // map chart
     // comment out the above 4 lines to test just this
