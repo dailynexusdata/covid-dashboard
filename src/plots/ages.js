@@ -9,13 +9,20 @@ const makePlot = (ageData) => {
   const container = d3.select('#sbCounty-vaccine-ages');
   container.selectAll('*').remove();
 
+  container
+    .append('h1')
+    .text(
+      'Vaccination rate of 18-49 year olds lags behind 50+ in Santa Barbara County',
+    )
+    .style('font-size', '20pt');
+
   const data = nest()
     .key((d) => d.group)
     .entries(ageData);
 
   const size = {
-    height: 400,
-    width: Math.min(720, window.innerWidth - 40),
+    height: 300,
+    width: Math.min(375, window.innerWidth - 40),
   };
 
   const margin = {
@@ -29,6 +36,11 @@ const makePlot = (ageData) => {
     .append('svg')
     .attr('height', size.height)
     .attr('width', size.width);
+
+  container.append('p')
+    .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+          Agency</a>`);
 
   const x = d3
     .scaleTime()
@@ -63,10 +75,10 @@ const makePlot = (ageData) => {
       d3
         .axisBottom()
         .scale(x)
-        .ticks(6)
+        .ticks(3)
         .tickFormat((d) => {
           const t = d3.timeFormat('%b')(d);
-          return t === 'Jan' ? `${t} '21` : t;
+          return t === 'Jan' ? `${t}'21` : t;
         }),
     );
 
@@ -86,7 +98,11 @@ const makePlot = (ageData) => {
 
       ylines
         .append('text')
-        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
+        .text(
+          `${yVal * 100}%${
+            i === 4 ? ' of estimated age group population' : ''
+          }`,
+        )
         .attr('fill', '#adadad')
         .attr('x', margin.left)
         .attr('y', y(yVal) - 5);
@@ -103,7 +119,8 @@ const makePlot = (ageData) => {
       'y',
       (d, i) =>
         y(d.values[d.values.length - 1].pct) +
-        (i === 2 ? -20 : i === 3 ? 12 : 0),
+        (i === 2 ? -20 : i === 3 ? 12 : 0) +
+        (i === 1 ? -5 : 0),
     )
     .attr('alignment-baseline', 'middle')
     .attr('font-weight', 'bold')
@@ -118,10 +135,16 @@ const makePlot = (ageData) => {
       (d, i) =>
         y(d.values[d.values.length - 1].pct) +
         16 +
-        (i === 2 ? -20 : i === 3 ? 12 : 0),
+        (i === 2 ? -20 : i === 3 ? 12 : 0) +
+        (i === 1 ? -5 : 0),
     )
     .text((d) => `${Math.round(d.values[d.values.length - 1].pct * 100)}%`)
+    .attr('fill', (d, i) => colors(i))
     .attr('alignment-baseline', 'middle');
+
+  const older65 = d3.timeParse('%m-%d-%Y')('2-16-2021');
+
+  const older16to49 = d3.timeParse('%m-%d-%Y')('4-12-2021');
 };
 
 export default makePlot;

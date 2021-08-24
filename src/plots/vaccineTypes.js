@@ -36,8 +36,8 @@ const numberWithCommas = d3.format('.0s');
 
 const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   const size = {
-    width: 250,
-    height: 250,
+    width: 200,
+    height: 200,
   };
   const margin = {
     top: 35,
@@ -114,7 +114,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
   const horizLines = svg.append('g');
 
-  yticks.slice(1).forEach((yVal) => {
+  yticks.slice(1).forEach((yVal, i) => {
     horizLines
       .append('line')
       .attr('x1', margin.left)
@@ -126,7 +126,10 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
     horizLines
       .append('text')
-      .text(numberWithCommas(yVal))
+      .text(
+        numberWithCommas(yVal) +
+          (i === 2 && title === 'Pfizer' ? ' administered doses' : ''),
+      )
       .style('font-size', '10pt')
       .attr('fill', '#adadad')
       .attr('x', margin.left)
@@ -244,15 +247,15 @@ const vaccinePct = (div, size, data, colors, labels) => {
     bottom: 10,
   };
   div
-    .style('width', '100%')
+    .style('width', '650px')
     .style('display', 'flex')
     .style('justify-content', 'center');
 
   const svg = div.append('svg');
 
-  svg.attr('height', size.height).attr('width', size.width);
+  svg.attr('height', size.height).attr('width', 600);
 
-  const x = d3.scaleLinear().range([margin.left, size.width - margin.right]);
+  const x = d3.scaleLinear().range([margin.left, 600 - margin.right]);
 
   const y = size.height / 2 - 15;
 
@@ -283,7 +286,12 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .attr('fill', 'white')
     .style('font-weight', 'bold')
     .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])
-    .text((d) => `${Math.round((d[1] - d[0]) * 100)}%`);
+    .text(
+      (d, i) =>
+        `${Math.round((d[1] - d[0]) * 100)}%${
+          i === 0 ? ' of administered vaccines' : ''
+        }`,
+    );
 
   bars
     .append('text')
@@ -331,22 +339,26 @@ const makeVaccineTypes = (data) => {
   const container = d3.select('#dosesByVaccine-d3');
   container.selectAll('*').remove();
 
-  container.append('h1').text('Santa Barbara County Vaccinations');
+  container.append('h1').text('Santa Barbara County Vaccinations by Brand');
 
-  container.append('p').text('here is stuff');
+  // container.append('p').text('here is stuff');
 
   const barArea = container
     .append('div')
     .style('width', container.style('width'));
 
-  container.append('p').text('here is stuff');
+  // container.append('p').text('')
+
   const plotArea = container
     .append('div')
     .style('display', 'flex')
     .style('justify-content', 'center')
     .style('flex-wrap', 'wrap');
 
-  container.append('p').html("Source: <a href='https://google.com'>test</a>");
+  container.append('p')
+    .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+          Agency</a>`);
 
   const colors = {
     cumulative_pfizer_doses: '#4e79a7',
@@ -401,7 +413,7 @@ const makeVaccineTypes = (data) => {
     jjDiv,
     data,
     (d) => d.cumulative_jj_doses,
-    'J&J',
+    'Johnson & Johnson',
     colors.cumulative_jj_doses,
     yMax,
   );

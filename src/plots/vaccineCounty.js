@@ -38,19 +38,20 @@ const firstLast = (arr) => {
  * @since 8/3/2021
  */
 const makeVaccineCountySingle = (data, accessor, container, title) => {
-  container.append('h3').text(title);
+  // container.append('h3').text(title);
 
   const size = {
-    height: 400,
+    height: 350,
     width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
   };
 
   const margin = {
     left: 10,
-    top: 10,
+    top: 0,
     right: 10,
     bottom: 30,
   };
+  // { key: Santa Barbara , values: [{Jan 1}, {jan 2},...]}
 
   const nestedData = d3Collection
     .nest()
@@ -135,7 +136,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
   console.log(y(0));
   const yticks = d3.range(0, 1, 0.2);
   const horizLines = svg.append('g');
-  yticks.slice(1).forEach((yVal) => {
+  yticks.slice(1).forEach((yVal, i) => {
     horizLines
       .append('line')
       .attr('x1', margin.left)
@@ -147,7 +148,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
 
     horizLines
       .append('text')
-      .text(d3.format('.0%')(yVal))
+      .text(d3.format('.0%')(yVal) + (i === 3 ? ' of county population' : ''))
       .style('font-size', '10pt')
       .attr('fill', '#adadad')
       .attr('x', margin.left)
@@ -178,7 +179,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
   endLabels
     .append('text')
     .attr('x', (d) => x(d.date))
-    .attr('y', (d, i) => y(d.pct) + (i >= 2 ? -5 : 15) + (i === 1 ? 15 : 0))
+    .attr('y', (d, i) => y(d.pct) + (i >= 2 ? -5 : 15) + (i === 1 ? 23 : 0))
     .attr('text-anchor', 'end')
     .text((d) => d.county + (d.county === 'California' ? ' Average' : ''))
     .attr('fill', (d) => color(d.county));
@@ -189,12 +190,19 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
 };
 
 const makeVaccineCounty = (data) => {
-  const container = d3.select('#dosesByCounty-d3');
+  const container = d3.select('#dosesByCounty-d3').style('width', '400px');
   container.selectAll('*').remove();
 
-  container.append('h1').text('Santa Barbara County Vaccinations');
+  container
+    .append('h1')
+    .text('Santa Barbara County Vaccinations Following State Average')
+    .style('font-size', '20pt');
 
-  container.append('p').text('here is stuff');
+  container
+    .append('p')
+    .text(
+      'Each line shows the vaccination progress of receiving at least one dose for all counties in California.',
+    );
 
   const plots = container
     .append('div')
@@ -204,19 +212,22 @@ const makeVaccineCounty = (data) => {
   const atLeastOne = plots.append('div');
   const fully = plots.append('div');
 
-  container.append('p').html("Source: <a href='https://google.com'>test</a>");
+  container.append('p')
+    .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+          Agency</a>`);
   makeVaccineCountySingle(
     data,
     (d) => d.cumulative_at_least_one_dose,
     atLeastOne,
     'At Least One Dose',
   );
-  makeVaccineCountySingle(
-    data,
-    (d) => d.cumulative_fully_vaccinated,
-    fully,
-    'Fully Vaccinated',
-  );
+  // makeVaccineCountySingle(
+  //   data,
+  //   (d) => d.cumulative_fully_vaccinated,
+  //   fully,
+  //   'Fully Vaccinated',
+  // );
 
   // console.log(d3.scaleOrdinal(d3.schemeTableau10).range());
   console.log([

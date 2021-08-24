@@ -33,8 +33,11 @@ const makePlot = () => {
   const table = container
     .append('table')
     .style('border-collapse', 'collapse')
-    .style('margin', '10px')
-    .style('background-color', '#d3d3d3');
+    .style('margin', '10px');
+
+  container.append('p').text('Source: Santa Barbara County Public Health');
+
+  // .style('background-color', '#d3d3d3');
 
   table
     .selectAll('headers')
@@ -56,7 +59,7 @@ const makePlot = () => {
     .enter()
     .append('tr')
     .style('background-color', (d) =>
-      d.area === 'Isla Vista' ? 'green' : 'none',
+      d.area === 'Isla Vista' ? '#d3d3d3' : 'none',
     )
     .selectAll('dat')
     .data((d) => Object.entries(d))

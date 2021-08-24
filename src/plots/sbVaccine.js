@@ -41,7 +41,7 @@ const makeSbVaccines = (data) => {
     .style('margin', '0 10px')
     .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
     .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
-  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through July 2021</h1>
+  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through August 2021</h1>
 </div>
 <div id="vaccineLegend"></div>
 <svg id="vaccinePlot" style="align-self: center"></svg>
@@ -58,8 +58,8 @@ const makeSbVaccines = (data) => {
   };
 
   const size = {
-    width: Math.min(600, window.innerWidth - 40),
-    height: 400,
+    width: Math.min(400, window.innerWidth - 40),
+    height: 350,
   };
 
   const margin = {
@@ -112,10 +112,10 @@ const makeSbVaccines = (data) => {
       d3
         .axisBottom()
         .scale(x)
-        .ticks(6)
+        .ticks(3)
         .tickFormat((d) => {
           const t = d3.timeFormat('%b')(d);
-          return t === 'Jan' ? `${t} '21` : t;
+          return t === 'Jan' ? `${t}'21` : t;
         }),
     );
 
@@ -132,13 +132,6 @@ const makeSbVaccines = (data) => {
     .slice(1)
     .forEach((yVal, i) => {
       horizLines
-        .append('text')
-        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
-        .attr('fill', '#adadad')
-        .attr('x', margin.left)
-        .attr('y', y(yVal) - 5);
-
-      horizLines
         .append('line')
         .attr('x1', margin.left)
         .attr('x2', size.width - margin.right)
@@ -146,6 +139,16 @@ const makeSbVaccines = (data) => {
         .attr('y2', y(yVal))
         .attr('stroke', '#d3d3d3')
         .attr('stroke-width', '0.5px');
+      if (i === 3) {
+        return;
+      }
+
+      horizLines
+        .append('text')
+        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
+        .attr('fill', '#adadad')
+        .attr('x', margin.left)
+        .attr('y', y(yVal) - 5);
     });
 
   const singleArea = d3

@@ -76,24 +76,26 @@ const makeDailyCases = (data) => {
         }),
     );
   const horizLines = svg.append('g');
-  y.ticks(4).slice(1).forEach((yVal) => {
-    horizLines
-      .append('line')
-      .attr('x1', margin.left)
-      .attr('x2', size.width - margin.right)
-      .attr('y1', y(yVal))
-      .attr('y2', y(yVal))
-      .attr('stroke', '#d3d3d3')
-      .attr('stroke-width', '0.5px');
+  y.ticks(4)
+    .slice(1)
+    .forEach((yVal) => {
+      horizLines
+        .append('line')
+        .attr('x1', margin.left)
+        .attr('x2', size.width - margin.right)
+        .attr('y1', y(yVal))
+        .attr('y2', y(yVal))
+        .attr('stroke', '#d3d3d3')
+        .attr('stroke-width', '0.5px');
 
-    horizLines
-      .append('text')
-      .text(yVal)
-      .style('font-size', '10pt')
-      .attr('fill', '#adadad')
-      .attr('x', margin.left)
-      .attr('y', y(yVal) - 5);
-  });
+      horizLines
+        .append('text')
+        .text(yVal)
+        .style('font-size', '10pt')
+        .attr('fill', '#adadad')
+        .attr('x', margin.left)
+        .attr('y', y(yVal) - 5);
+    });
   /*
      Start Plot:
    */
@@ -109,7 +111,7 @@ const makeDailyCases = (data) => {
     .attr('width', 1)
     .attr('y', (d) => y(d.cases))
     .attr('height', (d) => size.height - margin.bottom - y(d.cases));
-    /* if (y(d.cases) < 0) {
+  /* if (y(d.cases) < 0) {
         console.log(d);
         return size, height;
       } */
