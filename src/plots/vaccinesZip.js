@@ -221,12 +221,12 @@ const makePlot = (data) => {
     (d) => casmaliaZip === +d.properties.zip,
   ).properties;
 
-  annotation 
+  annotation
     .append('circle')
     .attr('cx', casmaliaAntonio[0])
     .attr('cy', casmaliaAntonio[1])
     .attr('r', 4);
-  const casmaliaLine = 25
+  const casmaliaLine = 25;
   annotation
     .append('line')
     .attr('x1', casmaliaAntonio[0])
@@ -271,8 +271,8 @@ const makePlot = (data) => {
     .attr('text-anchor', 'end')
     .attr('x', casmaliaAntonio[0] - 5)
     .attr('y', casmaliaAntonio[1] + casmaliaLine - 8 + 36);
-  
-    annotation
+
+  annotation
     .append('text')
     .text(`${Math.round(casData.vacPct * 100)}% vaccinated`)
     .attr('alignment-baseline', 'hanging')
@@ -289,12 +289,12 @@ const makePlot = (data) => {
     (d) => carpinteriaZip === +d.properties.zip,
   ).properties;
 
-  annotation 
+  annotation
     .append('circle')
     .attr('cx', carpinteria[0] - 2)
     .attr('cy', carpinteria[1] - 2)
     .attr('r', 3);
-  const carpinteriaLine = 100
+  const carpinteriaLine = 100;
 
   annotation
     .append('line')
@@ -321,7 +321,7 @@ const makePlot = (data) => {
     .style('font-size', '12px')
     .attr('text-anchor', 'start')
     .attr('x', carpinteria[0] - 25)
-    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 12);
+    .attr('y', carpinteria[1] - carpinteriaLine - 48 + 12);
 
   annotation
     .append('text')
@@ -330,7 +330,7 @@ const makePlot = (data) => {
     .style('font-size', '12px')
     .attr('text-anchor', 'start')
     .attr('x', carpinteria[0] - 25)
-    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 24)
+    .attr('y', carpinteria[1] - carpinteriaLine - 48 + 24);
 
   annotation
     .append('text')
@@ -339,7 +339,7 @@ const makePlot = (data) => {
     .style('font-size', '12px')
     .attr('text-anchor', 'start')
     .attr('x', carpinteria[0] - 25)
-    .attr('y', carpinteria[1] -carpinteriaLine - 48 + 36)
-  };
+    .attr('y', carpinteria[1] - carpinteriaLine - 48 + 36);
+};
 
 export default makePlot;
