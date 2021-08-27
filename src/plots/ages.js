@@ -11,6 +11,8 @@ const makePlot = (ageData) => {
 
   container
     .append('h1')
+    .style('color', '#18186C')
+    .style('width', '400px')
     .text(
       'Vaccination rate of 18-49 year olds lags behind 50+ in Santa Barbara County',
     )
@@ -39,7 +41,7 @@ const makePlot = (ageData) => {
 
   container.append('p')
     .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif; color: #18186C">Source: California Health and Human Services
           Agency</a>`);
 
   const x = d3

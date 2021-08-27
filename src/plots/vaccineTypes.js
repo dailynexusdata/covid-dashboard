@@ -48,7 +48,11 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
   div.style('margin', '10px 0');
 
-  div.append('h3').text(`${title} Doses`).style('margin', '0 0 0 5px');
+  div
+    .append('h3')
+    .text(`${title} Doses`)
+    .style('margin', '0 0 0 5px')
+    .style('color', '#18186C');
 
   const svg = div.append('svg');
   svg.attr('width', size.width).attr('height', size.height);
@@ -253,7 +257,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
 
   const svg = div.append('svg');
 
-  svg.attr('height', size.height).attr('width', 600);
+  svg.attr('height', 60).attr('width', 600);
 
   const x = d3.scaleLinear().range([margin.left, 600 - margin.right]);
 
@@ -339,8 +343,14 @@ const makeVaccineTypes = (data) => {
   const container = d3.select('#dosesByVaccine-d3');
   container.selectAll('*').remove();
 
-  container.append('h1').text('Santa Barbara County Vaccinations by Brand');
-
+  container
+    .append('h1')
+    .text('Santa Barbara County Vaccination Types')
+    .style('color', '#18186C');
+  container.append('p')
+    .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif; color: #18186C;">Source: California Health and Human Services
+          Agency</a>`);
   // container.append('p').text('here is stuff');
 
   const barArea = container
@@ -354,11 +364,6 @@ const makeVaccineTypes = (data) => {
     .style('display', 'flex')
     .style('justify-content', 'center')
     .style('flex-wrap', 'wrap');
-
-  container.append('p')
-    .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
-          Agency</a>`);
 
   const colors = {
     cumulative_pfizer_doses: '#4e79a7',

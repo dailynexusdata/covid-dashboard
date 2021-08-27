@@ -41,13 +41,13 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
   // container.append('h3').text(title);
 
   const size = {
-    height: 350,
+    height: 320,
     width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
   };
 
   const margin = {
     left: 10,
-    top: 0,
+    top: 20,
     right: 10,
     bottom: 30,
   };
@@ -68,7 +68,10 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     .domain(d3.extent(data, (d) => d.date))
     .range([margin.left, size.width - margin.right]);
 
-  const y = d3.scaleLinear().range([size.height - margin.bottom, margin.top]);
+  const y = d3
+    .scaleLinear()
+    .domain([0, 0.8])
+    .range([size.height - margin.bottom, margin.top]);
 
   const line = d3
     .line()
@@ -195,13 +198,15 @@ const makeVaccineCounty = (data) => {
 
   container
     .append('h1')
+    .style('color', '#18186C')
     .text('Santa Barbara County Vaccinations Following State Average')
     .style('font-size', '20pt');
 
   container
     .append('p')
+    .style('color', '#18186C')
     .text(
-      'Each line shows the vaccination progress of receiving at least one dose for all counties in California.',
+      'Each line represents the partial vaccination rate of each California county.',
     );
 
   const plots = container
@@ -214,7 +219,7 @@ const makeVaccineCounty = (data) => {
 
   container.append('p')
     .html(`<a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+  color: #18186C; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
           Agency</a>`);
   makeVaccineCountySingle(
     data,

@@ -89,19 +89,19 @@ import makePrintTable from './printTable';
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
+    // makePrintIvCases(ivCases);
     makeVaccineTypes(vaccineData);
-    makeVaccineCounty(countyVaccineData);
-    makeSbVaccines(vaccineData);
-    makeDeathsCounty(countyDeathData);
-    makePrintIvCases(ivCases);
+    // makeVaccineCounty(countyVaccineData);
+    // makeSbVaccines(vaccineData);
+    // makeDeathsCounty(countyDeathData);
 
-    makePrintCasesVariants(countyCases, countyVariantData);
-    makeAges(countyAgeData);
-    makePrintTable();
+    // makePrintCasesVariants(countyCases, countyVariantData);
+    // makeAges(countyAgeData);
+    // makePrintTable();
 
-    // map chart
-    // comment out the above 4 lines to test just this
-    makeVaccinesZip(zipData);
+    // // map chart
+    // // comment out the above 4 lines to test just this
+    // makeVaccinesZip(zipData);
   };
 
   window.addEventListener('resize', () => {

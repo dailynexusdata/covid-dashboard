@@ -37,18 +37,18 @@ const closeVaccines = () => {
 const makeSbVaccines = (data) => {
   d3
     .select('#sbCounty-vaccines-d3')
-    .style('max-width', '600px')
+    .style('width', '400px')
     .style('margin', '0 10px')
     .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
     .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
-  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through August 2021</h1>
+  <h1 style="margin: 0; letter-spacing: normal; color: #18186C; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through August 2021</h1>
 </div>
 <div id="vaccineLegend"></div>
 <svg id="vaccinePlot" style="align-self: center"></svg>
 <div class="footer">
   <!-- <p>Chart: Alex Rudolph / Daily Nexus </p> -->
-  <p style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
+  <p style="margin: 0; color: #18186C; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
+  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif; color: #18186C">Source: California Health and Human Services
           Agency</a></p>
 </div>`);
 
@@ -262,7 +262,7 @@ const makeSbVaccines = (data) => {
     .attr('y1', y(0))
     .attr('y2', y(adultData.singlePct))
     .attr('stroke-width', 2)
-    .attr('stroke', 'black')
+    .attr('stroke', '#18186C')
     .style('stroke-dasharray', '3, 3');
 
   hoverOver
@@ -272,7 +272,7 @@ const makeSbVaccines = (data) => {
     .attr('y1', y(adultData.singlePct))
     .attr('y2', y(adultData.singlePct))
     .attr('stroke-width', 2)
-    .attr('stroke', 'black')
+    .attr('stroke', '#18186C')
     .style('stroke-dasharray', '3, 3');
   if (window.innerWidth < 500) {
     hoverOver
@@ -280,19 +280,23 @@ const makeSbVaccines = (data) => {
       .attr('x', x(adultDate) - 120)
       .attr('y', y(adultData.singlePct) - 5 - 48)
       .text('April 5, 2021')
+      .attr('fill', '#18186C')
       .style('font-weight', 'bold');
     hoverOver
       .append('text')
+      .attr('fill', '#18186C')
       .attr('x', x(adultDate) - 120)
       .attr('y', y(adultData.singlePct) - 5 - 32)
       .text('Residents 16+');
     hoverOver
       .append('text')
+      .attr('fill', '#18186C')
       .attr('x', x(adultDate) - 120)
       .attr('y', y(adultData.singlePct) - 5 - 16)
       .text('become eligible');
     hoverOver
       .append('text')
+      .attr('fill', '#18186C')
       .attr('x', x(adultDate) - 120)
       .attr('y', y(adultData.singlePct) - 5)
       .text('for the vaccine.');
@@ -302,14 +306,17 @@ const makeSbVaccines = (data) => {
       .attr('x', x(adultDate) - 180)
       .attr('y', y(adultData.singlePct) - 5 - 32)
       .text('April 5, 2021')
+      .attr('fill', '#18186C')
       .style('font-weight', 'bold');
     hoverOver
       .append('text')
+      .attr('fill', '#18186C')
       .attr('x', x(adultDate) - 180)
       .attr('y', y(adultData.singlePct) - 5 - 16)
       .text('Residents 16+ become');
     hoverOver
       .append('text')
+      .attr('fill', '#18186C')
       .attr('x', x(adultDate) - 180)
       .attr('y', y(adultData.singlePct) - 5)
       .text('eligible for the vaccine.');
@@ -353,7 +360,7 @@ const makeSbVaccines = (data) => {
       .attr('y1', y(0))
       .attr('y2', y(d.singlePct))
       .attr('stroke-width', 2)
-      .attr('stroke', 'black')
+      .attr('stroke', '#18186C')
       .style('stroke-dasharray', '3, 3');
     hoverArea
       .append('circle')
@@ -467,6 +474,7 @@ const makeSbVaccines = (data) => {
     .style('display', 'black')
     .style('line-height', '18pt')
     .style('margin', '0px')
+    .style('color', '#18186C')
     .style('letter-spacing', 'normal !important')
     .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif');
 

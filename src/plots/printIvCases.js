@@ -9,7 +9,7 @@ const makePlot = (data) => {
 
   const size = {
     height: 200,
-    width: Math.min(1400, window.innerWidth - 40),
+    width: Math.min(1050, window.innerWidth - 40),
   };
 
   const margin = {
@@ -20,14 +20,18 @@ const makePlot = (data) => {
   };
   container
     .append('h1')
+    .style('color', '#18186C')
     .text('New COVID-19 Cases in Isla Vista')
     .style('font-size', '20pt');
+  container
+    .append('p')
+    .text('Source: Santa Barbara County Public Health')
+    .style('color', '#18186C');
   const svg = container
     .append('svg')
     .attr('height', size.height)
     .attr('width', size.width);
 
-  container.append('p').text('Source: Santa Barbara County Public Health');
   const y = d3
     .scaleLinear()
     .domain(d3.extent(data, (d) => d.cases))
@@ -83,7 +87,7 @@ const makePlot = (data) => {
     .append('path')
     .attr('d', path)
     .attr('fill', 'none')
-    .attr('stroke', 'black')
+    .attr('stroke', '#18186C')
     .attr('stroke-width', 2);
 
   svg

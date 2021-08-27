@@ -30,9 +30,15 @@ const makePlot = (data) => {
   container.selectAll('*').remove();
 
   container
-    .append('h1')
-    .text('Santa Barbara County Vaccination Rate by Zip Code')
-    .style('font-size', '20pt');
+    .append('span')
+    .style('display', 'inline')
+    .html(
+      '<h1 style="font-size: 20pt; display: inline; color: #18186C">Santa Barbara County Vaccination Rate by Zip Code</h1><p style=\'display: inline; padding-left: 5px; color: #18186C\'>Source: Santa Barbara Public Health 7/20/2021.</p>',
+    );
+
+  // .append('h1')
+  // .text('Santa Barbara County Vaccination Rate by Zip Code')
+  // .style('font-size', '20pt');
   // container.append('p').text('Race alone');
   const margin = {
     top: 30,
@@ -41,12 +47,6 @@ const makePlot = (data) => {
     left: 0,
   };
 
-  const scaleContainer = container
-    .append('div')
-    .style('margin', '10px 0')
-    .style('display', 'flex')
-    .style('justify-content', 'center');
-
   const hoverArea = container
     .append('div')
     .style('position', 'relative')
@@ -54,9 +54,9 @@ const makePlot = (data) => {
     .style('justify-content', 'center');
   const svg = hoverArea.append('svg');
 
-  container
-    .append('div')
-    .html('<p>Source: Santa Barbara Public Health 7/20/2021.</p>');
+  // container
+  //   .append('div')
+  //   .html('<p>Source: Santa Barbara Public Health 7/20/2021.</p>');
 
   // container
   //   .append('div')
@@ -107,11 +107,6 @@ const makePlot = (data) => {
    * Legend:
    */
 
-  const scale = scaleContainer
-    .append('svg')
-    .attr('width', 100)
-    .attr('height', size.width / 2);
-
   const axisX = d3.scaleLinear().range([size.width / 2 - 55, 35]);
   const step = 1 / 20;
   const barDom = d3
@@ -125,15 +120,19 @@ const makePlot = (data) => {
     )
     .slice(1);
 
+  const scale = svg.append('g').attr('transform', 'translate(220,0)');
+
   scale
     .append('text')
+    .attr('fill', '#18186C')
     .text('% vaccinated')
     .attr('x', '50%')
-    .attr('y', '12')
+    .attr('y', 20)
     .attr('text-anchor', 'middle');
 
   scale
     .append('text')
+    .attr('fill', '#18186C')
     .text('100%')
     .attr('x', '50%')
     .attr('y', 35)
@@ -142,6 +141,7 @@ const makePlot = (data) => {
 
   scale
     .append('text')
+    .attr('fill', '#18186C')
     .text('0%')
     .attr('x', '50%')
     .attr('y', size.width / 2 - 28)
@@ -150,6 +150,7 @@ const makePlot = (data) => {
 
   scale
     .append('g')
+    .attr('transform', 'translate(225,0)')
     .selectAll('bars')
     .data(barDom)
     .enter()
@@ -195,6 +196,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text('The zip code containing Goleta, Isla Vista, Gaviota,')
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
@@ -203,6 +205,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text(
       `Naples and Capitan have a vaccination rate of ${Math.round(
         ivData.vacPct * 100,
@@ -237,6 +240,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text('Casmalia and Antonio have the lowest vaccination rate, ')
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
@@ -246,6 +250,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text(`with only ${Math.round(casData.vacPct * 100)}% vaccinated.`)
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
@@ -277,17 +282,18 @@ const makePlot = (data) => {
     .style('stroke-dasharray', '1, 2')
     .style('stroke', 'black');
 
-  annotation
-    .append('text')
-    .text('The zip code for')
-    .attr('alignment-baseline', 'hanging')
-    .style('font-size', '12px')
-    .attr('text-anchor', 'start')
-    .attr('x', carpinteria[0] - 25)
-    .attr('y', carpinteria[1] - carpinteriaLine - 48);
+  // annotation
+  //   .append('text')
+  //   .text('The zip code for')
+  //   .attr('alignment-baseline', 'hanging')
+  //   .style('font-size', '12px')
+  //   .attr('text-anchor', 'start')
+  //   .attr('x', carpinteria[0] - 25)
+  //   .attr('y', carpinteria[1] - carpinteriaLine - 48);
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text(`Carpinteria has ${Math.round(carpData.vacPct * 100)}%`)
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
@@ -297,6 +303,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text('people vaccinated, the')
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
@@ -306,6 +313,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
+    .attr('fill', '#18186C')
     .text('highest in the area.')
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
