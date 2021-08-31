@@ -7,6 +7,7 @@ import makeSbVaccines from './sbVaccine';
 import makeDeathsCounty from './deathsCounties';
 import makeVaccinesZip from './vaccinesZip';
 import makeDailyCases from './sbDailyCases';
+import makeAges from './ages';
 
 /**
  *
@@ -54,6 +55,12 @@ import makeDailyCases from './sbDailyCases';
     cumulative_reported_deaths: +d.cumulative_reported_deaths,
   }));
 
+  const ages = await d3.csv('dist/data/ages.csv', (d) => ({
+    date: convertTime(d.date),
+    group: d.demographic_value,
+    pct: d.partialPct,
+  }));
+
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
@@ -66,6 +73,7 @@ import makeDailyCases from './sbDailyCases';
     // map chart
     // comment out the above 4 lines to test just this
     makeVaccinesZip(zipData);
+    makeAges(ages);
   };
 
   window.addEventListener('resize', () => {
