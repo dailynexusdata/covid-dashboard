@@ -20,7 +20,9 @@ const makeDailyCases = (data) => {
    */
 
   // The class is necessary to apply styling
-  const container = d3.select('#sbCounty-dailyCases-d3');
+  const container = d3
+    .select('#sbCounty-dailyCases-d3')
+    .style('width', `${Math.min(600, window.innerWidth - 40)}px`);
 
   // When the resize event is called, reset the plot
   container.selectAll('*').remove();
@@ -39,12 +41,12 @@ const makeDailyCases = (data) => {
     left: 10,
   };
   const hoverArea = container.append('div').style('position', 'relative');
-  const svg = hoverArea
-    .append('svg')
-    .attr('height', size.height)
-    .attr('width', size.width);
-
-  container.append('a').text('Source: __________').attr('href', '');
+  const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
+  container
+    .append('p')
+    .html(
+      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+    );
 
   /*
      Create Scales:
@@ -71,29 +73,31 @@ const makeDailyCases = (data) => {
         .axisBottom()
         .scale(x)
         .tickFormat((d) => {
-          const t = d3.timeFormat("%b '%g")(d);
-          return t;
+          const t = d3.timeFormat('%b')(d);
+          return t === 'Jan' ? `${t} '21` : t;
         }),
     );
   const horizLines = svg.append('g');
-  y.ticks(4).slice(1).forEach((yVal) => {
-    horizLines
-      .append('line')
-      .attr('x1', margin.left)
-      .attr('x2', size.width - margin.right)
-      .attr('y1', y(yVal))
-      .attr('y2', y(yVal))
-      .attr('stroke', '#d3d3d3')
-      .attr('stroke-width', '0.5px');
+  y.ticks(4)
+    .slice(1)
+    .forEach((yVal, i) => {
+      horizLines
+        .append('line')
+        .attr('x1', margin.left)
+        .attr('x2', size.width - margin.right)
+        .attr('y1', y(yVal))
+        .attr('y2', y(yVal))
+        .attr('stroke', '#d3d3d3')
+        .attr('stroke-width', '0.5px');
 
-    horizLines
-      .append('text')
-      .text(yVal)
-      .style('font-size', '10pt')
-      .attr('fill', '#adadad')
-      .attr('x', margin.left)
-      .attr('y', y(yVal) - 5);
-  });
+      horizLines
+        .append('text')
+        .text(yVal + (i === 2 ? ' cases' : ''))
+        .style('font-size', '12pt')
+        .attr('fill', '#adadad')
+        .attr('x', margin.left)
+        .attr('y', y(yVal) - 5);
+    });
 
   // Tooltip
 
@@ -110,6 +114,8 @@ const makeDailyCases = (data) => {
      Start Plot:
    */
 
+  const barWidth = 1.5;
+
   const bars = svg
     .append('g')
     .attr('fill', '#85BDDEbb')
@@ -117,14 +123,11 @@ const makeDailyCases = (data) => {
     .data(data)
     .enter()
     .append('rect')
-    .attr('x', (d) => x(d.date))
-    .attr('width', 1)
+    .attr('x', (d) => x(d.date) - barWidth / 2)
+    .attr('width', barWidth)
     .attr('y', (d) => y(d.cases))
     .attr('height', (d) => size.height - margin.bottom - y(d.cases));
-    /* if (y(d.cases) < 0) {
-        console.log(d);
-        return size, height;
-      } */
+
   const line = d3
     .line()
     .x((d) => x(d.date))
@@ -139,29 +142,155 @@ const makeDailyCases = (data) => {
     .attr('stroke-width', 2)
     .attr('fill', 'none');
 
+  const hoverCircle = svg.append('g');
+
+  const labels = svg.append('g');
+
+  labels
+    .append('svg:defs')
+    .append('svg:marker')
+    .attr('id', 'sbCounty-dailyCases-d3-triangle2')
+    .attr('refX', 4)
+    .attr('refY', 2)
+    .attr('markerWidth', 4)
+    .attr('markerHeight', 4)
+    .attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M 4 0 0 2 4 4')
+    .attr('fill', '#D96942');
+
+  const casesDate = d3.timeParse('%m-%d-%Y')('02-07-2021');
+  const casesData = data.find((d) => d.date.getTime() === casesDate.getTime());
+
+  labels
+    .append('text')
+    .text('7-day')
+    .attr('class', 'tooltip')
+    .attr('x', x(casesDate) + 55)
+    .attr('y', y(casesData.avg) - 26)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '14pt')
+    .attr('fill', '#D96942')
+    .attr('font-weight', 'bold');
+
+  labels
+    .append('text')
+    .text('Average')
+    .attr('class', 'tooltip')
+    .attr('x', x(casesDate) + 55)
+    .attr('y', y(casesData.avg) - 10)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '14pt')
+    .attr('fill', '#D96942')
+    .attr('font-weight', 'bold');
+  labels
+    .append('path')
+    .attr(
+      'd',
+      `M ${x(casesDate) + 15} ${y(casesData.avg) + 10} Q ${x(casesDate) + 55} ${
+        y(casesData.avg) + 10
+      }, ${x(casesDate) + 55} ${y(casesData.avg) - 5}`,
+    )
+    .attr('fill', 'none')
+    .attr('stroke', '#D96942')
+    .attr('stroke-width', 2)
+    .attr('marker-start', 'url(#sbCounty-dailyCases-d3-triangle2)');
+
+  labels
+    .append('svg:defs')
+    .append('svg:marker')
+    .attr('id', 'sbCounty-dailyCases-d3-triangle1')
+    .attr('refX', 4)
+    .attr('refY', 2)
+    .attr('markerWidth', 4)
+    .attr('markerHeight', 4)
+    .attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M 4 0 0 2 4 4')
+    .attr('fill', '#85BDDEbb');
+
+  const avgDate = d3.timeParse('%m-%d-%Y')('05-04-2020');
+  const avgData = data.find((d) => d.date.getTime() === avgDate.getTime());
+
+  labels
+    .append('text')
+    .text('Cases')
+    .attr('class', 'tooltip')
+    .attr('x', x(avgDate) + 55)
+    .attr('y', y(avgData.cases) - 10)
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '14pt')
+    .attr('fill', '#85BDDEbb')
+    .attr('font-weight', 'bold');
+  labels
+    .append('path')
+    .attr(
+      'd',
+      `M ${x(avgDate) + 15} ${y(avgData.cases) + 10} Q ${x(avgDate) + 55} ${
+        y(avgData.cases) + 10
+      }, ${x(avgDate) + 55} ${y(avgData.cases) - 5}`,
+    )
+    .attr('fill', 'none')
+    .attr('stroke', '#85BDDEbb')
+    .attr('stroke-width', 2)
+    .attr('marker-start', 'url(#sbCounty-dailyCases-d3-triangle1)');
+
   svg.on('mousemove', (event) => {
     const mouseX = d3.pointer(event)[0];
 
     const xVal = x.invert(mouseX);
-    const closestTime = d3
-      .timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal))
-      .getTime();
+    const closestTime = d3.timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal)).getTime();
 
     const closestPoint = data.find((d) => d.date.getTime() === closestTime);
+
+    if (closestPoint === undefined || !closestPoint.cases) {
+      return;
+    }
+
+    const tooltipWidth = 150;
+
     tooltip.style('display', 'block');
     tooltip
-      .style('width', '100px')
-      .style('font-size', '10px')
-      .style('left', `${Math.min(mouseX, size.width - 150)}px`)
-      .style('top', `${y(closestPoint.cases) - 75}px`)
+      .style('width', `${tooltipWidth}px`)
+      .style('font-size', '14px')
+      .style(
+        'left',
+        `${Math.max(
+          tooltipWidth / 2,
+          Math.min(mouseX - tooltipWidth / 2, size.width - tooltipWidth - 20),
+        )}px`,
+      )
+      .style('top', `${y(closestPoint.avg) - 100}px`)
       .html(
-        `<h3>Date: ${d3.timeFormat('%b %d, %g')(closestPoint.date)}</h3><h3> Cases: ${closestPoint.cases}</h3> <h3> 7-day Average: ${d3.format(',.2f')(closestPoint.avg)}</h3><hr style="margin: 3px 0;"/>`,
+        `<p>${d3.timeFormat('%B %d, %Y')(
+          closestPoint.date,
+        )}</p><hr style="border: none; border-top: 1px solid #d3d3d3"/><p> Cases: ${
+          closestPoint.cases
+        }</p> <p> 7-day Average: ${d3.format(',.2f')(closestPoint.avg)}</p>`,
       );
+
+    bars.attr('fill-opacity', 0.2);
+    bars.filter((d) => d.date.getTime() === closestPoint.date.getTime()).attr('fill-opacity', 1);
+
+    hoverCircle.selectAll('circle').remove();
+    hoverCircle
+      .append('circle')
+      .attr('r', 4)
+      .attr('fill', '#D96942')
+      .attr('cx', x(closestPoint.date))
+      .attr('cy', y(closestPoint.avg));
+
+    labels.attr('fill-opacity', 0);
+    labels.attr('stroke-opacity', 0);
   });
 
   svg.on('mouseleave', function () {
     d3.select(this).attr('stroke-width', 1);
     tooltip.style('display', 'none');
+    bars.attr('fill-opacity', 1);
+    hoverCircle.selectAll('circle').remove();
+    labels.attr('fill-opacity', 1);
+    labels.attr('stroke-opacity', 1);
   });
 };
 

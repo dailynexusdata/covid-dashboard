@@ -37,43 +37,45 @@ const firstLast = (arr) => {
  *
  * @since 8/3/2021
  */
-const makeVaccineCountySingle = (data, accessor, container, title) => {
+const makeVaccineCountySingle = (data, accessor, container, title, y, size, margin) => {
   container.append('h3').text(title);
-
-  const size = {
-    height: 400,
-    width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
-  };
-
-  const margin = {
-    left: 10,
-    top: 10,
-    right: 10,
-    bottom: 30,
-  };
 
   const nestedData = d3Collection
     .nest()
     .key((d) => d.county)
     .entries(data);
 
-  const svg = container
-    .append('svg')
-    .attr('width', size.width)
-    .attr('height', size.height);
+  const svg = container.append('svg').attr('width', size.width).attr('height', size.height);
 
   const x = d3
     .scaleTime()
     .domain(d3.extent(data, (d) => d.date))
     .range([margin.left, size.width - margin.right]);
 
-  const y = d3.scaleLinear().range([size.height - margin.bottom, margin.top]);
-
   const line = d3
     .line()
     .x((d) => x(d.date))
     .y((d) => y(accessor(d) / d.population));
+  const yticks = d3.range(0, y.domain()[1] + 0.2, 0.2);
+  const horizLines = svg.append('g');
+  yticks.slice(1).forEach((yVal) => {
+    horizLines
+      .append('line')
+      .attr('x1', margin.left)
+      .attr('x2', size.width - margin.right)
+      .attr('y1', y(yVal))
+      .attr('y2', y(yVal))
+      .attr('stroke', '#d3d3d3')
+      .attr('stroke-width', '0.5px');
 
+    horizLines
+      .append('text')
+      .text(d3.format('.0%')(yVal))
+      .style('font-size', '10pt')
+      .attr('fill', '#adadad')
+      .attr('x', margin.left)
+      .attr('y', y(yVal) - 5);
+  });
   const color = (s) => {
     if (s === 'California') {
       // UGHHHHHHHHHHHHHHHHHHHHHHHHHHH
@@ -109,12 +111,8 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     .append('path')
     .attr('d', (d) => line(d.values))
     .attr('stroke', (d) => color(d.key))
-    .attr('stroke-width', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 3 : 1,
-    )
-    .attr('stroke-opacity', (d) =>
-      ['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5,
-    )
+    .attr('stroke-width', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 3 : 1))
+    .attr('stroke-opacity', (d) => (['California', 'Santa Barbara'].includes(d.key) ? 1 : 0.5))
     .attr('fill', 'none');
 
   svg
@@ -132,27 +130,7 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
           return t === 'Jan' ? `${t} '21` : t;
         }),
     );
-  console.log(y(0));
-  const yticks = d3.range(0, 1, 0.2);
-  const horizLines = svg.append('g');
-  yticks.slice(1).forEach((yVal) => {
-    horizLines
-      .append('line')
-      .attr('x1', margin.left)
-      .attr('x2', size.width - margin.right)
-      .attr('y1', y(yVal))
-      .attr('y2', y(yVal))
-      .attr('stroke', '#d3d3d3')
-      .attr('stroke-width', '0.5px');
 
-    horizLines
-      .append('text')
-      .text(d3.format('.0%')(yVal))
-      .style('font-size', '10pt')
-      .attr('fill', '#adadad')
-      .attr('x', margin.left)
-      .attr('y', y(yVal) - 5);
-  });
   const endLabelsValues = firstLast(
     nestedData
       .map((d) => {
@@ -183,13 +161,45 @@ const makeVaccineCountySingle = (data, accessor, container, title) => {
     .text((d) => d.county + (d.county === 'California' ? ' Average' : ''))
     .attr('fill', (d) => color(d.county));
 
-  endLabels.on('mouseover', (event, d) => {
-    console.log(d);
+  const tooltip = container
+    .append('div')
+    .style('display', 'none')
+    .style('pointer-events', 'none')
+    .style('position', 'absolute')
+    .style('background-color', 'white')
+    .style('padding', '10px')
+    .style('border-radius', '10px')
+    .style('border', '1px solid #d3d3d3');
+  endLabels.on('mousemove', (event, d) => {
+    const [mouseX, mouseY] = d3.pointer(event);
+
+    const width = 170;
+
+    tooltip.selectAll('*').remove();
+    tooltip
+      .style('display', 'block')
+      .style('left', `${Math.min(mouseX - width / 2, size.width - width)}px`)
+      .style('top', `${mouseY + 30}px`)
+      .style('width', `${width}px`)
+      .html(
+        `${
+          d.county === 'California' ? 'State Average' : `${d.county} County`
+        }<hr style="border: none; border-top: 1px solid #d3d3d3;" />`
+          + `Percentage: ${Math.round(d.pct * 1000) / 10}%`,
+      )
+      .style('pointer-events', 'none');
+  });
+
+  endLabels.on('mouseleave', (event, d) => {
+    tooltip.style('display', 'none');
+    tooltip.selectAll('*').remove();
   });
 };
 
 const makeVaccineCounty = (data) => {
-  const container = d3.select('#dosesByCounty-d3');
+  const container = d3
+    .select('#dosesByCounty-d3')
+    .style('width', Math.min(750, window.innerWidth - 40));
   container.selectAll('*').remove();
 
   container.append('h1').text('Santa Barbara County Vaccinations');
@@ -200,22 +210,49 @@ const makeVaccineCounty = (data) => {
     .append('div')
     .style('display', 'flex')
     .style('flex-wrap', 'wrap')
-    .style('justify-content', 'space-between');
-  const atLeastOne = plots.append('div');
-  const fully = plots.append('div');
+    .style('justify-content', 'space-between')
+    .style('margin-top', '10px');
+  const atLeastOne = plots.append('div').style('position', 'relative');
+  const fully = plots.append('div').style('position', 'relative');
 
-  container.append('p').html("Source: <a href='https://google.com'>test</a>");
+  container
+    .append('p')
+    .html(
+      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+    );
+  const size = {
+    height: 400,
+    width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
+  };
+  const margin = {
+    left: 10,
+    top: 50,
+    right: 10,
+    bottom: 30,
+  };
+
+  const y = d3
+    .scaleLinear()
+    .domain(d3.extent(data, (d) => d.cumulative_at_least_one_dose / d.population))
+    .range([size.height - margin.bottom, margin.top]);
+
   makeVaccineCountySingle(
     data,
     (d) => d.cumulative_at_least_one_dose,
     atLeastOne,
     'At Least One Dose',
+    y,
+    size,
+    margin,
   );
   makeVaccineCountySingle(
     data,
     (d) => d.cumulative_fully_vaccinated,
     fully,
     'Fully Vaccinated',
+    y,
+    size,
+    margin,
   );
 
   // console.log(d3.scaleOrdinal(d3.schemeTableau10).range());

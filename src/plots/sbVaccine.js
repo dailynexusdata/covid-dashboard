@@ -35,21 +35,29 @@ const closeVaccines = () => {
 // Variant Surveillance
 
 const makeSbVaccines = (data) => {
-  d3.select('#sbCounty-vaccines-d3')
-    .style('max-width', '600px')
+  const container = d3
+    .select('#sbCounty-vaccines-d3')
     .style('margin', '0 10px')
-    .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
-    .html(`     <div style="letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">
-  <h1 style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue, Helvetica, Arial, sans-serif; font-size: 18pt;">Santa Barbara County COVID-19 Vaccinations Through July 2021</h1>
-</div>
-<div id="vaccineLegend"></div>
-<svg id="vaccinePlot" style="align-self: center"></svg>
-<div class="footer">
-  <!-- <p>Chart: Alex Rudolph / Daily Nexus </p> -->
-  <p style="margin: 0; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif"><a href="https://data.chhs.ca.gov/dataset" style="text-decoration: none;
-  color: black; letter-spacing: normal; font-family: Helvetica Neue,Helvetica,Arial,sans-serif;">Source: California Health and Human Services
-          Agency</a></p>
-</div>`);
+    .style('width', `${Math.min(600, window.innerWidth - 40)}px`);
+
+  container.selectAll('*').remove();
+
+  container
+    .append('h1')
+    .text(
+      `Santa Barbara County COVID-19 Vaccinations Through ${d3.timeFormat('%B %Y')(
+        data[data.length - 1].date,
+      )}`,
+    );
+
+  const vaccineLegend = container.append('div');
+  const svg = container.append('svg').style('self-align', 'center');
+
+  container
+    .append('p')
+    .html(
+      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+    );
 
   const color = {
     Partial: '#E15759',
@@ -68,8 +76,6 @@ const makeSbVaccines = (data) => {
     right: 50,
   };
 
-  const svg = d3.select('#vaccinePlot');
-
   svg.selectAll('*').remove();
 
   svg.attr('width', size.width).attr('height', size.height);
@@ -87,17 +93,16 @@ const makeSbVaccines = (data) => {
     d3
       .axisBottom()
       .scale(x)
-    // .tickValues([
-    //   ...(size.width < 600
-    //     ? [x.domain()[1]]
-    //     : [x.domain()[0]]),
-    //   ...x.ticks(),
-    // ])
+      // .tickValues([
+      //   ...(size.width < 600
+      //     ? [x.domain()[1]]
+      //     : [x.domain()[0]]),
+      //   ...x.ticks(),
+      // ])
       .tickFormat((d) => {
         const t = d3.timeFormat('%b')(d);
         return t === 'Jan' ? `${t}'21` : t;
       }),
-
   );
 
   yAxisLine.select('.domain').attr('stroke-width', 0);
@@ -207,20 +212,8 @@ const makeSbVaccines = (data) => {
   };
 
   const lastData = data[data.length - 1];
-  endText(
-    lastData.date,
-    lastData.singlePct,
-    lastData.singlePct,
-    color.Partial,
-    'partial',
-  );
-  endText(
-    lastData.date,
-    lastData.fullPct,
-    lastData.fullPct,
-    color.Full,
-    'full',
-  );
+  endText(lastData.date, lastData.singlePct, lastData.singlePct, color.Partial, 'partial');
+  endText(lastData.date, lastData.fullPct, lastData.fullPct, color.Full, 'full');
   // endText(
   //   lastData.date,
   //   lastData.singlePct - lastData.fullPct,
@@ -230,9 +223,7 @@ const makeSbVaccines = (data) => {
   const hoverOver = svg.append('g').attr('id', 'vaccineHoverOver');
 
   const adultDate = new Date(2021, 4 - 1, 5);
-  const adultData = data.find(
-    ({ date }) => date.getTime() === adultDate.getTime(),
-  );
+  const adultData = data.find(({ date }) => date.getTime() === adultDate.getTime());
   hoverOver
     .append('line')
     .attr('x1', x(adultDate))
@@ -350,20 +341,14 @@ const makeSbVaccines = (data) => {
     if (window.innerWidth > 400) {
       hoverArea
         .append('text')
-        .text(
-          `Fully Vaccinated: ${Math.round(d.fullPct * 10000) / 100}%`,
-        )
+        .text(`Fully Vaccinated: ${Math.round(d.fullPct * 10000) / 100}%`)
         .attr('x', x(d.date) + (x(d.date) > size.width / 2 ? -5 : 5))
         .attr('y', y(d.fullPct))
         .attr('text-anchor', x(d.date) > size.width / 2 ? 'end' : 'start')
         .attr('alignment-baseline', 'middle');
       hoverArea
         .append('text')
-        .text(
-          `Partially Vaccinated: ${
-            Math.round((d.singlePct - d.fullPct) * 10000) / 100
-          }%`,
-        )
+        .text(`Partially Vaccinated: ${Math.round((d.singlePct - d.fullPct) * 10000) / 100}%`)
         .attr('x', x(d.date) + (x(d.date) > size.width / 2 ? -5 : 5))
         .attr('y', y(d.singlePct))
         .attr('text-anchor', x(d.date) > size.width / 2 ? 'end' : 'start')
@@ -400,9 +385,13 @@ const makeSbVaccines = (data) => {
     }
     hoverArea
       .append('text')
-      .text(d3.timeFormat('%m/%d/%Y')(d.date))
+      .text(
+        `${d3.timeFormat('%B')(d.date)} ${+d3.timeFormat('%d')(d.date)}, ${d3.timeFormat('%Y')(
+          d.date,
+        )}`,
+      )
       .attr('x', x(d.date) + (x(d.date) > size.width / 2 ? -5 : 5))
-      .attr('y', size.height - margin.bottom - 7)
+      .attr('y', y(d.singlePct) - 16)
       .attr('text-anchor', x(d.date) > size.width / 2 ? 'end' : 'start')
       .attr('alignment-baseline', 'middle');
   };
@@ -420,7 +409,7 @@ const makeSbVaccines = (data) => {
       const closestPoint = data.reduce((best, curr) => {
         if (
           Math.abs(best.date.getTime() - xVal.getTime())
-            < Math.abs(curr.date.getTime() - xVal.getTime())
+          < Math.abs(curr.date.getTime() - xVal.getTime())
         ) {
           return best;
         }
@@ -435,14 +424,14 @@ const makeSbVaccines = (data) => {
     });
   });
 
-  const legend = d3.select('#vaccineLegend').style('width', '100%');
+  const legend = vaccineLegend.style('width', '100%');
 
   legend.selectAll('*').remove();
 
   legend
     .append('p')
     .html(
-      'County percentage of<span class=\'squares\'></span>and<span class=\'squares\'></span>residents including adults and children.',
+      "County percentage of<span class='squares'></span>and<span class='squares'></span>residents including adults and children.",
     )
     .style('display', 'black')
     .style('line-height', '18pt')
@@ -453,7 +442,7 @@ const makeSbVaccines = (data) => {
   legend
     .selectAll('.squares')
     .data(['Partial', 'Full'])
-  // .style("text-transform", "capitalize")
+    // .style("text-transform", "capitalize")
     .style('text-decoration', 'underline')
     .style('text-decoration-color', (d) => color[d])
     .style('text-decoration-thickness', '0.2em')

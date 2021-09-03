@@ -160,7 +160,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
     hoverOver
       .append('text')
-      .text(`${monthAbbr(dat.date)} ${+dayNumber(dat.date)}`)
+      .text(`${monthAbbr(dat.date)} ${+dayNumber(dat.date)}, ${d3.timeFormat('%Y')(dat.date)}`)
       .attr('x', x(dat.date))
       .attr('y', y(getValue(dat)) - 20)
       .attr('text-anchor', flip ? 'end' : 'start')
@@ -190,12 +190,12 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
       const xVal = x.invert(mouseX);
 
-      const closestTime = d3
-        .timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal))
-        .getTime();
+      const closestTime = d3.timeParse('%m/%d/%Y')(d3.timeFormat('%m/%d/%Y')(xVal)).getTime();
       const closestPoint = data.find((d) => d.date.getTime() === closestTime);
 
-      makeLine(closestPoint);
+      if (closestPoint && closestPoint.date) {
+        makeLine(closestPoint);
+      }
     });
 
     svg.on('mouseleave touchend', () => {
@@ -231,11 +231,9 @@ const vaccinePct = (div, size, data, colors, labels) => {
 
   const stacked = d3
     .stack()
-    .keys([
-      'cumulative_pfizer_doses',
-      'cumulative_moderna_doses',
-      'cumulative_jj_doses',
-    ])([plotData]);
+    .keys(['cumulative_pfizer_doses', 'cumulative_moderna_doses', 'cumulative_jj_doses'])([
+      plotData,
+    ]);
 
   const margin = {
     left: 0,
@@ -243,10 +241,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
     right: 0,
     bottom: 10,
   };
-  div
-    .style('width', '100%')
-    .style('display', 'flex')
-    .style('justify-content', 'center');
+  div.style('width', '100%').style('display', 'flex').style('justify-content', 'center');
 
   const svg = div.append('svg');
 
@@ -328,25 +323,53 @@ const vaccinePct = (div, size, data, colors, labels) => {
  * @since 8/7/2021
  */
 const makeVaccineTypes = (data) => {
-  const container = d3.select('#dosesByVaccine-d3');
+  const container = d3
+    .select('#dosesByVaccine-d3')
+    .style('width', Math.min(750, window.innerWidth - 40));
   container.selectAll('*').remove();
 
   container.append('h1').text('Santa Barbara County Vaccinations');
 
-  container.append('p').text('here is stuff');
+  const lastDate = data[data.length - 1];
+  const yMax = Math.max(lastDate.cumulative_moderna_doses, lastDate.cumulative_pfizer_doses);
 
-  const barArea = container
-    .append('div')
-    .style('width', container.style('width'));
+  const pfizerMost = yMax === lastDate.cumulative_pfizer_doses;
 
-  container.append('p').text('here is stuff');
+  container
+    .append('p')
+    .text(
+      `Currently, ${pfizerMost ? 'Pfizer' : 'Moderna'} `
+        + `has administered ${d3.format(',')(yMax)} doses, `
+        + `${
+          Math.round(
+            (yMax
+              / (lastDate.cumulative_jj_doses
+                + lastDate.cumulative_moderna_doses
+                + lastDate.cumulative_pfizer_doses))
+              * 10000,
+          ) / 100
+        }% of all doses administered in Santa Barbara County.`,
+    )
+    .style('margin-bottom', '10px');
+
+  const barArea = container.append('div').style('width', container.style('width'));
+
+  container
+    .append('p')
+    .text(
+      'Pfizer and Moderna doses were administed in similar amounts up to April, then Pfizer doubled the number of doses in May, administering almost 100,000.',
+    );
   const plotArea = container
     .append('div')
     .style('display', 'flex')
     .style('justify-content', 'center')
     .style('flex-wrap', 'wrap');
 
-  container.append('p').html("Source: <a href='https://google.com'>test</a>");
+  container
+    .append('p')
+    .html(
+      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+    );
 
   const colors = {
     cumulative_pfizer_doses: '#4e79a7',
@@ -369,11 +392,6 @@ const makeVaccineTypes = (data) => {
     data[data.length - 1],
     colors,
     labels,
-  );
-
-  const yMax = Math.max(
-    data[data.length - 1].cumulative_moderna_doses,
-    data[data.length - 1].cumulative_pfizer_doses,
   );
 
   const pfizerDiv = plotArea.append('div');

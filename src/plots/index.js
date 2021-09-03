@@ -8,7 +8,7 @@ import makeDeathsCounty from './deathsCounties';
 import makeVaccinesZip from './vaccinesZip';
 import makeDailyCases from './sbDailyCases';
 import makeAges from './ages';
-
+import makeDailyDeaths from './sbDailyDeaths';
 /**
  *
  * Good to checkout:
@@ -22,7 +22,11 @@ import makeAges from './ages';
     date: convertTime(d.date),
     cases: +d.cases,
     avg: +d.avg,
+    deaths: +d.deaths,
+    death_avg: +d.death_avg,
   }));
+  makeDailyCases(caseData);
+  makeDailyDeaths(caseData);
 
   const vaccineData = await d3.csv(
     'dist/data/vaccines.csv',
@@ -37,8 +41,10 @@ import makeAges from './ages';
       population: +d.population,
     }),
   );
+  makeSbVaccines(vaccineData);
+  makeVaccineTypes(vaccineData);
 
-  console.log(vaccineData.columns);
+  // console.log(vaccineData.columns);
 
   const countyVaccineData = await d3.csv('dist/data/ca_vaccines.csv', (d) => ({
     ...d,
@@ -47,6 +53,7 @@ import makeAges from './ages';
     cumulative_fully_vaccinated: +d.cumulative_fully_vaccinated,
     population: +d.population,
   }));
+  makeVaccineCounty(countyVaccineData);
 
   const countyDeathData = await d3.csv('dist/data/deaths.csv', (d) => ({
     ...d,
@@ -54,14 +61,17 @@ import makeAges from './ages';
     population: +d.population,
     cumulative_reported_deaths: +d.cumulative_reported_deaths,
   }));
+  makeDeathsCounty(countyDeathData);
 
   const ages = await d3.csv('dist/data/ages.csv', (d) => ({
     date: convertTime(d.date),
     group: d.demographic_value,
     pct: d.partialPct,
   }));
+  makeAges(ages);
 
   const zipData = await d3.json('dist/data/sbzips.json');
+  makeVaccinesZip(zipData);
 
   const resize = () => {
     makeVaccineTypes(vaccineData);
@@ -69,6 +79,7 @@ import makeAges from './ages';
     makeSbVaccines(vaccineData);
     makeDeathsCounty(countyDeathData);
     makeDailyCases(caseData);
+    makeDailyDeaths(caseData);
 
     // map chart
     // comment out the above 4 lines to test just this
@@ -79,6 +90,4 @@ import makeAges from './ages';
   window.addEventListener('resize', () => {
     resize();
   });
-
-  resize();
 })();
