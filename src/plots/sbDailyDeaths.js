@@ -43,10 +43,10 @@ const makeDailyCases = (data) => {
   container
     .append('p')
     .text(
-      `As of ${d3.timeFormat('%B %-d, %Y')(data[data.length - 1].date)}, ${sum(
+      `As of ${d3.timeFormat('%B %-d, %Y')(data[data.length - 1].date)}, there have been ${sum(
         data,
         (d) => d.deaths,
-      )} people have died in Santa Barbara County due to COVID-19.`,
+      )} reported COVID-19 deaths in Santa Barbara County.`,
     );
 
   const hoverArea = container.append('div').style('position', 'relative');
