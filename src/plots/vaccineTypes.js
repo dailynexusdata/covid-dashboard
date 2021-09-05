@@ -224,8 +224,8 @@ const vaccinePct = (div, size, data, colors, labels) => {
   delete plotData.date;
 
   const total = d3.sum(Object.keys(labels).map((key) => plotData[key]));
-
   Object.keys(plotData).forEach((key) => {
+    plotData[`${key}Sum`] = plotData[key];
     plotData[key] /= total;
   });
 
@@ -234,7 +234,6 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .keys(['cumulative_pfizer_doses', 'cumulative_moderna_doses', 'cumulative_jj_doses'])([
       plotData,
     ]);
-
   const margin = {
     left: 0,
     top: 10,
@@ -252,7 +251,6 @@ const vaccinePct = (div, size, data, colors, labels) => {
   const y = size.height / 2 - 15;
   const barsData = stacked.map((d) => ({ ...d[0], key: d.key }));
 
-  console.log(barsData);
   const bars = svg
     .selectAll('rect')
     .data(barsData)
@@ -303,9 +301,8 @@ const vaccinePct = (div, size, data, colors, labels) => {
 
       const xVal = x.invert(mouseX);
       const closestBar = barsData.find((d) => xVal > d[0] && xVal < d[1]);
-      console.log(closestBar[1] - closestBar[0]);
       barsHover.append('text')
-        .text(Math.round((closestBar[1] - closestBar[0]) * 456373))
+        .text(plotData[`${closestBar.key}Sum`])
         .attr('y', y + 35)
         .attr('x', x(closestBar[0]));
     });
