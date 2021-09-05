@@ -32,8 +32,8 @@ import * as d3 from 'd3';
  *  @since 7/30/2021
  */
 
-const numberWithCommas = d3.format('.0s');
-
+const thousandsK = d3.format('.0s');
+const numberWithCommas = d3.format(',');
 const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   const size = {
     width: 250,
@@ -126,7 +126,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
     horizLines
       .append('text')
-      .text(numberWithCommas(yVal))
+      .text(thousandsK(yVal))
       .style('font-size', '10pt')
       .attr('fill', '#adadad')
       .attr('x', margin.left)
@@ -302,7 +302,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
       const xVal = x.invert(mouseX);
       const closestBar = barsData.find((d) => xVal > d[0] && xVal < d[1]);
       barsHover.append('text')
-        .text(plotData[`${closestBar.key}Sum`])
+        .text(numberWithCommas((plotData[`${closestBar.key}Sum`])))
         .attr('y', y + 35)
         .attr('x', x(closestBar[0]));
     });
