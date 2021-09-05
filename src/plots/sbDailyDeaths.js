@@ -5,6 +5,7 @@
  *
  */
 import * as d3 from 'd3';
+import { sum } from 'd3';
 
 /**
  * @param {*} data - dailyCases.csv
@@ -38,8 +39,19 @@ const makeDailyCases = (data) => {
     bottom: 25,
     left: 10,
   };
+
+  container
+    .append('p')
+    .text(
+      `As of ${d3.timeFormat('%B %-d, %Y')(data[data.length - 1].date)}, ${sum(
+        data,
+        (d) => d.deaths,
+      )} people have died in Santa Barbara County due to COVID-19.`,
+    );
+
   const hoverArea = container.append('div').style('position', 'relative');
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
+
   container
     .append('p')
     .html(
@@ -90,7 +102,7 @@ const makeDailyCases = (data) => {
 
       horizLines
         .append('text')
-        .text(yVal + (i === 5 ? ' deaths' : ''))
+        .text(yVal + (i === 5 ? ' deaths per day' : ''))
         .style('font-size', '12pt')
         .attr('fill', '#adadad')
         .attr('x', margin.left)
@@ -241,7 +253,7 @@ const makeDailyCases = (data) => {
 
     const closestPoint = data.find((d) => d.date.getTime() === closestTime);
 
-    if (closestPoint === undefined || !closestPoint.cases) {
+    if (closestPoint === undefined) {
       return;
     }
 

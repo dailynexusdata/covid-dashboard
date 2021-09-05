@@ -45,8 +45,6 @@ const makePlot = (container, data) => {
     .key((d) => d.county)
     .entries(data);
 
-  console.log(nestedData);
-
   const svg = container.append('svg').attr('width', size.width).attr('height', size.height);
   container
     .append('p')
@@ -59,10 +57,7 @@ const makePlot = (container, data) => {
     .range([margin.left, size.width - margin.right]);
   const y = d3
     .scaleLinear()
-    .domain([
-      0,
-      Math.ceil(d3.max(data, (d) => d.cumulative_reported_deaths / d.population) * 1000) / 1000,
-    ])
+    .domain([0, Math.ceil(d3.max(data, (d) => d.pct) * 1000) / 1000])
     .range([size.height - margin.bottom, margin.top]);
   svg
     .append('g')
@@ -106,7 +101,7 @@ const makePlot = (container, data) => {
   const line = d3
     .line()
     .x((d) => x(d.date))
-    .y((d) => y(d.cumulative_reported_deaths / d.population));
+    .y((d) => y(d.pct));
 
   const color = (s) => {
     if (s === 'California') {
@@ -153,7 +148,7 @@ const makePlot = (container, data) => {
         const last = d.values[d.values.length - 1];
         return {
           ...last,
-          pct: last.cumulative_reported_deaths / last.population,
+          pct: last.pct,
         };
       })
       .sort((a, b) => a.pct - b.pct),
