@@ -43,7 +43,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
     top: 35,
     left: 10,
     bottom: 30,
-    right: 10,
+    right: 25,
   };
 
   div.style('margin', '10px 0');
@@ -51,7 +51,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   div.append('h3').text(`${title} Doses`).style('margin', '0 0 0 5px');
 
   const svg = div.append('svg');
-  svg.attr('width', size.width).attr('height', size.height);
+  svg.attr('width', size.width).attr('height', size.height + margin.right);
 
   const x = d3
     .scaleTime()
@@ -238,7 +238,7 @@ const vaccinePct = (div, size, data, colors, labels) => {
   const margin = {
     left: 0,
     top: 10,
-    right: 0,
+    right: 25,
     bottom: 10,
   };
   div.style('width', '100%').style('display', 'flex').style('justify-content', 'center');
@@ -250,10 +250,12 @@ const vaccinePct = (div, size, data, colors, labels) => {
   const x = d3.scaleLinear().range([margin.left, size.width - margin.right]);
 
   const y = size.height / 2 - 15;
+  const barsData = stacked.map((d) => ({ ...d[0], key: d.key }));
 
+  console.log(barsData);
   const bars = svg
     .selectAll('rect')
-    .data(stacked.map((d) => ({ ...d[0], key: d.key })))
+    .data(barsData)
     .join('g');
 
   bars
@@ -293,6 +295,25 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .style('font-weight', 'bold')
     .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])
     .text((d) => labels[d.key]);
+  const barsHover = svg.append('g');
+  svg.on('mouseenter touchstart', () => {
+    svg.on('mousemove touchout', (event) => {
+      barsHover.selectAll('*').remove();
+      const mouseX = d3.pointer(event)[0];
+
+      const xVal = x.invert(mouseX);
+      const closestBar = barsData.find((d) => xVal > d[0] && xVal < d[1]);
+      console.log(closestBar[1] - closestBar[0]);
+      barsHover.append('text')
+        .text(Math.round((closestBar[1] - closestBar[0]) * 456373))
+        .attr('y', y + 35)
+        .attr('x', x(closestBar[0]));
+    });
+
+    svg.on('mouseleave touchend', () => {
+      barsHover.selectAll('*').remove();
+    });
+  });
 
   /**
    * @todo Add total numbers for vaccines

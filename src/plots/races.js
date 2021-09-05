@@ -50,7 +50,7 @@ const makeRaces = (raceData) => {
     .x((d) => x(d.date))
     .y((d) => y(d.pct));
 
-  const colors = d3.scaleOrdinal(d3.schemeTableau10);
+  const colors = d3.scaleOrdinal(d3.schemeCategory10);
 
   const lines = svg
     .selectAll('lines')
@@ -106,6 +106,7 @@ const makeRaces = (raceData) => {
 
   endLabels
     .append('text')
+    .attr('font-weight', 'bold')
     .attr('x', size.width - margin.right)
     .attr('y', (d) => {
       if (d.key === 'White') {
@@ -114,7 +115,7 @@ const makeRaces = (raceData) => {
       if (d.key === 'Latino') {
         return y(d.values[d.values.length - 1].pct) - 15;
       }
-      if (d.key === 'American Indian or Alaska Native') {
+      if (d.key === 'Indigenous') {
         return y(d.values[d.values.length - 1].pct) - 10;
       }
 
