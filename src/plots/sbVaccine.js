@@ -84,12 +84,14 @@ const makeSbVaccines = (data) => {
     .scaleTime()
     .domain(d3.extent(data, (d) => d.date))
     .range([margin.left, size.width - margin.right]);
-  const yAxisLine = svg
+
+  const xAxisLine = svg
     .append('g')
     .style('font-family', 'Helvetica Neue,Helvetica,Arial,sans-serif')
     .style('font-size', '12pt')
     .attr('transform', `translate(0, ${size.height - margin.bottom})`);
-  yAxisLine.call(
+
+  xAxisLine.call(
     d3
       .axisBottom()
       .scale(x)
@@ -105,11 +107,11 @@ const makeSbVaccines = (data) => {
       }),
   );
 
-  yAxisLine.select('.domain').attr('stroke-width', 0);
+  xAxisLine.select('.domain').attr('stroke-width', 0);
 
   const y = d3
     .scaleLinear()
-    .domain([0, 0.6])
+    .domain([0, d3.max(data, (d) => d.singlePct)])
     .range([size.height - margin.bottom, margin.top]);
 
   const horizLines = svg.append('g');
@@ -220,69 +222,6 @@ const makeSbVaccines = (data) => {
   //   (lastData.fullPct + lastData.singlePct) / 2,
   //   "#adadad"
   // );
-  const hoverOver = svg.append('g').attr('id', 'vaccineHoverOver');
-
-  const adultDate = new Date(2021, 4 - 1, 5);
-  const adultData = data.find(({ date }) => date.getTime() === adultDate.getTime());
-  hoverOver
-    .append('line')
-    .attr('x1', x(adultDate))
-    .attr('x2', x(adultDate))
-    .attr('y1', y(0))
-    .attr('y2', y(adultData.singlePct))
-    .attr('stroke-width', 2)
-    .attr('stroke', 'black')
-    .style('stroke-dasharray', '3, 3');
-
-  hoverOver
-    .append('line')
-    .attr('x1', x(adultDate) - (window.innerWidth < 500 ? 120 : 180))
-    .attr('x2', x(adultDate))
-    .attr('y1', y(adultData.singlePct))
-    .attr('y2', y(adultData.singlePct))
-    .attr('stroke-width', 2)
-    .attr('stroke', 'black')
-    .style('stroke-dasharray', '3, 3');
-  if (window.innerWidth < 500) {
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 120)
-      .attr('y', y(adultData.singlePct) - 5 - 48)
-      .text('April 5, 2021')
-      .style('font-weight', 'bold');
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 120)
-      .attr('y', y(adultData.singlePct) - 5 - 32)
-      .text('Residents 16+');
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 120)
-      .attr('y', y(adultData.singlePct) - 5 - 16)
-      .text('become eligible');
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 120)
-      .attr('y', y(adultData.singlePct) - 5)
-      .text('for the vaccine.');
-  } else {
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 180)
-      .attr('y', y(adultData.singlePct) - 5 - 32)
-      .text('April 5, 2021')
-      .style('font-weight', 'bold');
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 180)
-      .attr('y', y(adultData.singlePct) - 5 - 16)
-      .text('Residents 16+ become');
-    hoverOver
-      .append('text')
-      .attr('x', x(adultDate) - 180)
-      .attr('y', y(adultData.singlePct) - 5)
-      .text('eligible for the vaccine.');
-  }
 
   // const peakDate = new Date(2021, 4 - 1, 17);
   // const peakData = data.find(
@@ -397,8 +336,8 @@ const makeSbVaccines = (data) => {
   };
   svg.on('mouseenter touchstart', () => {
     svg.on('mousemove touchout', (event) => {
-      hoverOver.style('fill-opacity', 0);
-      hoverOver.style('stroke-opacity', 0);
+      // hoverOver.style('fill-opacity', 0);
+      // hoverOver.style('stroke-opacity', 0);
       d3.selectAll('.vaccineLine').style('stroke-width', 0.2);
       d3.selectAll('.vaccineArea').style('fill-opacity', 0.2);
       const mouseX = d3.pointer(event)[0];
@@ -463,8 +402,8 @@ const makeSbVaccines = (data) => {
       d3.select(`#vaccineLine-${d.toLowerCase()}`).style('stroke-width', 5);
       d3.select(`#endLabel-${d.toLowerCase()}`).style('fill-opacity', 1);
 
-      hoverOver.style('fill-opacity', 0.2);
-      hoverOver.style('stroke-opacity', 0.2);
+      // hoverOver.style('fill-opacity', 0.2);
+      // hoverOver.style('stroke-opacity', 0.2);
     })
     .on('mouseleave touchend touchcancel', () => {
       closeVaccines();

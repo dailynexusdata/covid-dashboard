@@ -151,9 +151,6 @@ const makePlot = (data) => {
   const ivZip = 93117;
   const ivData = data.features.find((d) => ivZip === +d.properties.zip).properties;
 
-  // see what cities this includes:
-  console.log(ivData);
-
   annotation.append('circle').attr('cx', endIV[0]).attr('cy', endIV[1]).attr('r', 4);
   const endIVyOffset = 25; // height of line
   annotation

@@ -17,60 +17,51 @@ import makeDailyDeaths from './sbDailyDeaths';
  */
 
 (async () => {
+  const data = await d3.json('dist/data/combined.json');
+
   const convertTime = d3.timeParse('%Y-%m-%d');
 
-  const caseData = await d3.csv('dist/data/dailyCases.csv', (d) => ({
+  const dailyCases = data.dailyCases.map((d) => ({
     date: convertTime(d.date),
-    cases: +d.cases,
     avg: +d.avg,
+    cases: +d.cases,
+  }));
+
+  const dailyDeaths = data.dailyCases.map((d) => ({
+    date: convertTime(d.date),
     deaths: +d.deaths,
     death_avg: +d.death_avg,
   }));
-  makeDailyCases(caseData);
-  makeDailyDeaths(caseData);
 
-  const vaccineData = await d3.csv(
-    'dist/data/vaccines.csv',
-    // 'https://raw.githubusercontent.com/dailynexusdata/covid-dashboard/main/dist/data/vaccines.csv',
-    (d) => ({
-      date: convertTime(d.date),
-      cumulative_pfizer_doses: +d.cumulative_pfizer_doses,
-      cumulative_moderna_doses: +d.cumulative_moderna_doses,
-      cumulative_jj_doses: +d.cumulative_jj_doses,
-      fullPct: +d.cumulative_fully_vaccinated / +d.population,
-      singlePct: +d.cumulative_at_least_one_dose / +d.population,
-      population: +d.population,
-    }),
-  );
-  makeSbVaccines(vaccineData);
-  makeVaccineTypes(vaccineData);
+  const vaccineData = data.vaccines.map((d) => ({
+    date: convertTime(d.date),
+    cumulative_pfizer_doses: +d.cumulative_pfizer_doses,
+    cumulative_moderna_doses: +d.cumulative_moderna_doses,
+    cumulative_jj_doses: +d.cumulative_jj_doses,
+    fullPct: +d.cumulative_fully_vaccinated / +d.population,
+    singlePct: +d.cumulative_at_least_one_dose / +d.population,
+    population: +d.population,
+  }));
 
-  // console.log(vaccineData.columns);
-
-  const countyVaccineData = await d3.csv('dist/data/ca_vaccines.csv', (d) => ({
+  const countyVaccineData = data.ca_vaccines.map((d) => ({
     ...d,
     date: convertTime(d.date),
     cumulative_at_least_one_dose: +d.cumulative_at_least_one_dose,
     cumulative_fully_vaccinated: +d.cumulative_fully_vaccinated,
     population: +d.population,
   }));
-  makeVaccineCounty(countyVaccineData);
 
-  const countyDeathData = await d3.csv('dist/data/deaths.csv', (d) => ({
+  const countyDeathData = data.deaths.map((d) => ({
     ...d,
     date: convertTime(d.date),
-    population: +d.population,
-    cumulative_reported_deaths: +d.cumulative_reported_deaths,
+    pct: +d.pct,
   }));
-  makeDeathsCounty(countyDeathData);
 
-  const ages = await d3.csv('dist/data/ages.csv', (d) => ({
+  const ages = data.ages.map((d) => ({
     date: convertTime(d.date),
     group: d.demographic_value,
     pct: d.partialPct,
   }));
-
-  makeAges(ages);
 
   const races = await d3.csv('dist/data/races.csv', (d) => ({
     date: convertTime(d.date),
@@ -79,15 +70,14 @@ import makeDailyDeaths from './sbDailyDeaths';
   }));
   makeRaces(races);
   const zipData = await d3.json('dist/data/sbzips.json');
-  makeVaccinesZip(zipData);
 
   const resize = () => {
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);
     makeSbVaccines(vaccineData);
     makeDeathsCounty(countyDeathData);
-    makeDailyCases(caseData);
-    makeDailyDeaths(caseData);
+    makeDailyCases(dailyCases);
+    makeDailyDeaths(dailyDeaths);
     makeRaces(races);
 
     // map chart
@@ -99,4 +89,6 @@ import makeDailyDeaths from './sbDailyDeaths';
   window.addEventListener('resize', () => {
     resize();
   });
+
+  resize();
 })();
