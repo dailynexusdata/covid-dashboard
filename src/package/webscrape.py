@@ -69,6 +69,22 @@ def get_ages(data):
     return ageGroups[["date", "partialPct", 'demographic_value']] \
         .sort_values(by=["demographic_value", "date"]) 
 
+@format
+def get_races(data):
+    raceGroups = data[data.demographic_category == "Race/Ethnicity"] \
+        .reset_index(drop=True)
+
+    raceGroups["partialPct"] = raceGroups["cumulative_at_least_one_dose"] / raceGroups["est_population"]
+
+    raceGroups = raceGroups[raceGroups.demographic_value != "Unknown"]
+    raceGroups = raceGroups[raceGroups.demographic_value != "Other Race"]
+    raceGroups = raceGroups[raceGroups.demographic_value != "Native Hawaiian or Other Pacific Islander"]
+
+    raceGroups.demographic_value = raceGroups.demographic_value.replace("Black or African American", "Black")
+    raceGroups.demographic_value = raceGroups.demographic_value.replace("American Indian or Alaska Native", "Indigenous")
+
+    return raceGroups[["date", "partialPct", "demographic_value"]]
+
 
 def main():
     cases_deaths = pd.read_csv(
@@ -116,7 +132,8 @@ def main():
         vaccines=get_vaccines(combined),
         deaths=get_deaths(cases_deaths),
         dailyCases=get_daily_cases(cases_deaths),
-        ages=get_ages(vaccines_demographics)
+        ages=get_ages(vaccines_demographics),
+        race=get_races(vaccines_demographics)
     ))
 
     with open("../../dist/data/combined.json", "w") as outfile:
