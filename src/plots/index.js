@@ -63,13 +63,16 @@ import makeDailyDeaths from './sbDailyDeaths';
     pct: d.partialPct,
   }));
 
-  const races = await d3.csv('dist/data/races.csv', (d) => ({
+  const races = data.race.map((d) => ({
     date: convertTime(d.date),
     group: d.demographic_value,
     pct: +d.partialPct,
   }));
 
-  const zipData = await d3.json('dist/data/sbzips.json');
+  const zipData = await d3.json(
+    // 'dist/data/sbzips.json'
+    'https://raw.githubusercontent.com/dailynexusdata/covid-dashboard/main/dist/data/sbzips.json',
+  );
 
   const resize = () => {
     makeVaccineTypes(vaccineData);

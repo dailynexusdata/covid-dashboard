@@ -22,9 +22,9 @@ const makeRaces = (raceData) => {
 
   const margin = {
     top: 30,
-    right: 130,
+    right: 140,
     bottom: 30,
-    left: 15,
+    left: 10,
   };
 
   container.append('h1').text('title');
@@ -113,21 +113,19 @@ const makeRaces = (raceData) => {
     .attr('x', size.width - margin.right)
     .attr('y', (d) => {
       if (d.key === 'White') {
-        return y(d.values[d.values.length - 1].pct) - 5;
-      }
-      // if (d.key === 'Latino') {
-      //   return y(d.values[d.values.length - 1].pct) - 15;
-      // }
-      if (d.key === 'Indigenous') {
-        return y(d.values[d.values.length - 1].pct) - 6;
+        return y(d.values[0].pct) - 5;
       }
 
-      return y(d.values[d.values.length - 1].pct);
+      if (d.key === 'Indigenous') {
+        return y(d.values[0].pct) - 3;
+      }
+
+      return y(d.values[0].pct);
     })
     .attr('alignment-baseline', 'middle')
     .attr('fill', (d, i) => colors(i))
     .style('flex-wrap', 'wrap')
-    .text((d) => `${d.key}: ${Math.round(d.values[d.values.length - 1].pct * 100)}%`);
+    .text((d) => `${d.key}: ${Math.round(d.values[0].pct * 100)}%`);
 
   // endLabels
   //   .append('text')

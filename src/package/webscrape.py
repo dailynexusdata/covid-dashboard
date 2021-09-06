@@ -3,10 +3,16 @@ import numpy as np
 import seaborn as sns
 import json
 
+from datetime import datetime, timedelta
+import boto3
+import logging
+
+log = logging.getLogger(__name__)
+
 def format(func):
 
-    def json_output(*args, **kwargs):
-        df = func(*args, **kwargs)
+    def json_output(data, *args, **kwargs):
+        df = func(data, *args, **kwargs)
         return json.loads(df.astype({"date": "string"}).to_json(orient="records"))
 
     return json_output
@@ -40,11 +46,11 @@ def get_vaccines(data):
 
 @format
 def get_deaths(data):
+    data = data[["date", "area", "cumulative_reported_deaths", "population"]].dropna()
     data["pct"] = data.cumulative_reported_deaths / data.population
 
     return data[["date", "area", "pct"]] \
-        .rename({ "area": "county" }, axis=1) \
-        .dropna()
+        .rename({ "area": "county" }, axis=1)
 
 
 def seven_day_avg(c):
@@ -53,7 +59,7 @@ def seven_day_avg(c):
 
 @format
 def get_daily_cases(data):
-    sb_cases = data[data.area == "Santa Barbara"][["date", "cases", "deaths"]]
+    sb_cases = data[data.area == "Santa Barbara"][["date", "cases", "deaths"]].dropna()
     sb_cases["avg"] = seven_day_avg(sb_cases.cases)
     sb_cases["death_avg"] = seven_day_avg(sb_cases.deaths)
     return sb_cases
@@ -62,31 +68,35 @@ def get_daily_cases(data):
 @format
 def get_ages(data):
     ageGroups = data[data.demographic_category == "Age Group"] \
-        .reset_index(drop=True)
+        .reset_index(drop=True) \
+        .dropna()
 
     ageGroups["partialPct"] = ageGroups["cumulative_at_least_one_dose"] / ageGroups["est_population"]
 
     return ageGroups[["date", "partialPct", 'demographic_value']] \
         .sort_values(by=["demographic_value", "date"]) 
 
+
 @format
 def get_races(data):
     raceGroups = data[data.demographic_category == "Race/Ethnicity"] \
-        .reset_index(drop=True)
+        .reset_index(drop=True) \
+        .dropna()
 
     raceGroups["partialPct"] = raceGroups["cumulative_at_least_one_dose"] / raceGroups["est_population"]
 
     raceGroups = raceGroups[raceGroups.demographic_value != "Unknown"]
     raceGroups = raceGroups[raceGroups.demographic_value != "Other Race"]
     raceGroups = raceGroups[raceGroups.demographic_value != "Native Hawaiian or Other Pacific Islander"]
+    raceGroups = raceGroups[raceGroups.demographic_value != "American Indian or Alaska Native"]
 
     raceGroups.demographic_value = raceGroups.demographic_value.replace("Black or African American", "Black")
-    raceGroups.demographic_value = raceGroups.demographic_value.replace("American Indian or Alaska Native", "Indigenous")
+    # raceGroups.demographic_value = raceGroups.demographic_value.replace("American Indian or Alaska Native", "Indigenous")
 
     return raceGroups[["date", "partialPct", "demographic_value"]]
 
 
-def main():
+def fetch_data():
     cases_deaths = pd.read_csv(
         "https://data.chhs.ca.gov/dataset/f333528b-4d38-4814-bebb-12db1f10f535/"
         + "resource/046cdd2b-31e5-4d34-9ed3-b48cdbc4be7a/download/"
@@ -134,10 +144,32 @@ def main():
         dailyCases=get_daily_cases(cases_deaths),
         ages=get_ages(vaccines_demographics),
         race=get_races(vaccines_demographics)
-    ))
+    ), indent=2)
 
-    with open("../../dist/data/combined.json", "w") as outfile:
-        outfile.write(output)
+    # with open("../../dist/data/combined.json", "w") as outfile:
+    #     outfile.write(output)
+
+    return output
+
+
+def upload(data):
+    s3 = boto3.resource('s3')
+    response = s3.Object("dailynexus", "covid_dashboard_data.json").put(
+        Body=data,
+        ContentType="application/json",
+        ACL="public-read",
+        Expires=(datetime.now() + timedelta(hours=48))
+    )
+    log.info(response)
+
+
+def lambda_handler(event=None, context=None, dry_run=False):
+    covid_data = fetch_data()
+    upload(covid_data)
+
+
+def main():
+    lambda_handler(None, None, False)
 
 
 if __name__ == "__main__":

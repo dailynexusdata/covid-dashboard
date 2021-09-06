@@ -212,6 +212,10 @@ const makeDailyCases = (data) => {
   const avgDate = d3.timeParse('%m-%d-%Y')('05-04-2020');
   const avgData = data.find((d) => d.date.getTime() === avgDate.getTime());
 
+  if (avgData === undefined) {
+    return;
+  }
+
   labels
     .append('text')
     .text('Cases')
@@ -262,7 +266,7 @@ const makeDailyCases = (data) => {
       )
       .style('top', `${y(closestPoint.avg) - 100}px`)
       .html(
-        `<p>${d3.timeFormat('%B %d, %Y')(
+        `<p>${d3.timeFormat('%B %-d, %Y')(
           closestPoint.date,
         )}</p><hr style="border: none; border-top: 1px solid #d3d3d3"/><p> Cases: ${
           closestPoint.cases

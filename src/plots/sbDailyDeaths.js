@@ -272,7 +272,7 @@ const makeDailyCases = (data) => {
       )
       .style('top', `${y(closestPoint.death_avg) - 100}px`)
       .html(
-        `<p>${d3.timeFormat('%B %d, %Y')(
+        `<p>${d3.timeFormat('%B %-d, %Y')(
           closestPoint.date,
         )}</p><hr style="border: none; border-top: 1px solid #d3d3d3"/><p> Deaths: ${
           closestPoint.deaths

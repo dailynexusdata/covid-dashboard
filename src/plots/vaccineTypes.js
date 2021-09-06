@@ -354,6 +354,9 @@ const makeVaccineTypes = (data) => {
 
   const lastDate = data[data.length - 1];
   const yMax = Math.max(lastDate.cumulative_moderna_doses, lastDate.cumulative_pfizer_doses);
+  const allDoses = lastDate.cumulative_jj_doses
+    + lastDate.cumulative_moderna_doses
+    + lastDate.cumulative_pfizer_doses;
 
   const pfizerMost = yMax === lastDate.cumulative_pfizer_doses;
 
@@ -370,7 +373,7 @@ const makeVaccineTypes = (data) => {
                 + lastDate.cumulative_pfizer_doses))
               * 10000,
           ) / 100
-        }% of all doses administered in Santa Barbara County.`,
+        }% of the ${d3.format(',')(allDoses)} doses administered in Santa Barbara County.`,
     )
     .style('margin-bottom', '10px');
 

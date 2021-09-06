@@ -156,7 +156,7 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
   endLabels
     .append('text')
     .attr('x', (d) => x(d.date))
-    .attr('y', (d, i) => y(d.pct) + (i >= 2 ? -5 : 15) + (i === 1 ? 15 : 0))
+    .attr('y', (d, i) => y(d.pct) + (i >= 2 ? -5 : 30) + (i === 1 ? 15 : 0))
     .attr('text-anchor', 'end')
     .text((d) => d.county + (d.county === 'California' ? ' Average' : ''))
     .attr('fill', (d) => color(d.county));
