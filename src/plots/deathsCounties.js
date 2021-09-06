@@ -188,13 +188,13 @@ const makePlot = (container, data) => {
     tooltip.selectAll('*').remove();
     tooltip
       .style('display', 'block')
-      .style('left', `${Math.min(mouseX - width / 2, size.width - width)}px`)
+      .style('left', `${Math.min(mouseX - width, size.width - width)}px`)
       .style('top', `${mouseY + 50}px`)
       .style('width', `${width}px`)
       .html(
         `${
           d.county === 'California' ? 'State Average' : `${d.county} County`
-        }<hr style="border: none; border-top: 1px solid #d3d3d3;" />`
+        }<hr style="border: none; border-top: 1px solid #d3d3d3; width: ${width * 0.95}px" />`
           + `${Math.round(d.pct * 100000) / 100} deaths per 1000 people`,
       )
       .style('pointer-events', 'none');

@@ -5,11 +5,11 @@ import json
 
 def format(func):
 
-    def decorator(*args, **kwargs):
+    def json_output(*args, **kwargs):
         df = func(*args, **kwargs)
         return json.loads(df.astype({"date": "string"}).to_json(orient="records"))
 
-    return decorator
+    return json_output
 
 
 @format

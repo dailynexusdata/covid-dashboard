@@ -243,7 +243,7 @@ const makeDailyCases = (data) => {
 
     const closestPoint = data.find((d) => d.date.getTime() === closestTime);
 
-    if (closestPoint === undefined || !closestPoint.cases) {
+    if (closestPoint === undefined) {
       return;
     }
 

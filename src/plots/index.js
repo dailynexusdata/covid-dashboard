@@ -66,9 +66,9 @@ import makeDailyDeaths from './sbDailyDeaths';
   const races = await d3.csv('dist/data/races.csv', (d) => ({
     date: convertTime(d.date),
     group: d.demographic_value,
-    pct: d.partialPct,
+    pct: +d.partialPct,
   }));
-  makeRaces(races);
+
   const zipData = await d3.json('dist/data/sbzips.json');
 
   const resize = () => {
@@ -78,12 +78,12 @@ import makeDailyDeaths from './sbDailyDeaths';
     makeDeathsCounty(countyDeathData);
     makeDailyCases(dailyCases);
     makeDailyDeaths(dailyDeaths);
-    makeRaces(races);
 
-    // map chart
-    // comment out the above 4 lines to test just this
+    // // map chart
+    // // comment out the above 4 lines to test just this
     makeVaccinesZip(zipData);
     makeAges(ages);
+    makeRaces(races);
   };
 
   window.addEventListener('resize', () => {

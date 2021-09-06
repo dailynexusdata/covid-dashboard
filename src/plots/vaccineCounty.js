@@ -178,7 +178,7 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
     tooltip.selectAll('*').remove();
     tooltip
       .style('display', 'block')
-      .style('left', `${Math.min(mouseX - width / 2, size.width - width)}px`)
+      .style('left', `${Math.min(mouseX - width, size.width - width)}px`)
       .style('top', `${mouseY + 30}px`)
       .style('width', `${width}px`)
       .html(

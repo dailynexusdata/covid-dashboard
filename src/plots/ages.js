@@ -3,6 +3,7 @@
  */
 
 import * as d3 from 'd3';
+import { max } from 'd3';
 import { nest } from 'd3-collection';
 import { pointer } from 'd3-selection';
 
@@ -30,7 +31,8 @@ const makePlot = (ageData) => {
 
   container.append('h1').text('title');
 
-  const svg = container.append('svg').attr('height', size.height).attr('width', size.width);
+  const hoverArea = container.append('div').style('position', 'relative');
+  const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
 
   container
     .append('p')
@@ -71,7 +73,7 @@ const makePlot = (ageData) => {
       d3
         .axisBottom()
         .scale(x)
-        .ticks(window.innerWidth < 450 ? 3 : 5)
+        .ticks(window.innerWidth < 500 ? 4 : 6)
         .tickFormat((d) => {
           const t = d3.timeFormat('%b')(d);
           return t === 'Jan' ? `${t} '21` : t;
@@ -125,7 +127,20 @@ const makePlot = (ageData) => {
 
   const hoverOver = svg.append('g');
 
-  const makeLine = (dat) => {
+  const tooltip = hoverArea
+    .append('div')
+    .style('display', 'none')
+    .style('pointer-events', 'none')
+    .style('position', 'absolute')
+    .style('background-color', 'white')
+    .style('padding', '10px')
+    .style('border-radius', '10px')
+    .style('border', '1px solid #d3d3d3');
+
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  context.font = '12pt Arial, Helvetica, sans-serif';
+  const makeLine = (event, dat) => {
     hoverOver.selectAll('*').remove();
 
     hoverOver
@@ -147,25 +162,27 @@ const makePlot = (ageData) => {
 
     const flip = x(dat[0].date) > size.width / 2;
 
-    pts
-      .append('text')
-      .text((d) => `${Math.round(+d.pct * 10000) / 100}%`)
-      .attr('y', (d) => y(+d.pct))
-      .attr('x', (d) => x(d.date) + (flip ? -5 : 5))
-      .attr('text-anchor', flip ? 'end' : 'start')
-      .attr('alignment-baseline', 'middle');
+    tooltip.selectAll('*').remove();
 
-    hoverOver
-      .append('text')
-      .text(
-        `${d3.timeFormat('%B')(dat[0].date)} ${+d3.timeFormat('%d')(dat[0].date)}, ${+d3.timeFormat(
-          '%Y',
-        )(dat[0].date)}`,
-      )
-      .attr('x', x(dat[0].date) + (flip ? -5 : 5))
-      .attr('y', y(d3.max(dat, (d) => +d.pct)) - 10)
-      .attr('text-anchor', flip ? 'end' : 'start')
-      .attr('pointer-events', 'none');
+    const mouseX = d3.pointer(event)[0];
+    const dateText = `${d3.timeFormat('%B %-d, %Y')(dat[0].date)}`;
+    const wdth = context.measureText(dateText).width + 10;
+
+    const hght = y(max(dat, (d) => d.pct));
+    const maxHeight = 230;
+
+    tooltip
+      .style('width', wdth)
+      .style('left', `${flip ? mouseX - wdth - 25 : mouseX + 10}px`)
+      .style('top', `${Math.min(hght, maxHeight)}px`);
+    tooltip.append('p').text(dateText);
+    tooltip.append('hr').style('border', 'none').style('border-top', '1px solid #d3d3d3');
+
+    dat
+      .sort((a, b) => b.pct - a.pct)
+      .forEach((d) => {
+        tooltip.append('p').text(`${d.group}: ${Math.round(d.pct * 10000) / 100}%`);
+      });
   };
 
   svg.on('mouseenter touchstart', () => {
@@ -179,7 +196,8 @@ const makePlot = (ageData) => {
       const closestPoints = data.map((d1) => d1.values.find((d) => d.date.getTime() === closestTime));
 
       if (closestPoints && closestPoints[0]) {
-        makeLine(closestPoints);
+        makeLine(event, closestPoints);
+        tooltip.style('display', 'block');
       }
       lines.attr('stroke-opacity', 0.2);
     });
@@ -187,6 +205,7 @@ const makePlot = (ageData) => {
     svg.on('mouseleave touchend', () => {
       lines.attr('stroke-opacity', 1);
       hoverOver.selectAll('*').remove();
+      tooltip.style('display', 'none');
     });
   });
 };

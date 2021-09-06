@@ -32,8 +32,8 @@ import * as d3 from 'd3';
  *  @since 7/30/2021
  */
 
-const numberWithCommas = d3.format('.0s');
-
+const thousandsK = d3.format('.0s');
+const numberWithCommas = d3.format(',');
 const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
   const size = {
     width: 250,
@@ -126,7 +126,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
     horizLines
       .append('text')
-      .text(numberWithCommas(yVal))
+      .text(thousandsK(yVal))
       .style('font-size', '10pt')
       .attr('fill', '#adadad')
       .attr('x', margin.left)
@@ -224,8 +224,8 @@ const vaccinePct = (div, size, data, colors, labels) => {
   delete plotData.date;
 
   const total = d3.sum(Object.keys(labels).map((key) => plotData[key]));
-
   Object.keys(plotData).forEach((key) => {
+    plotData[`${key}Sum`] = plotData[key];
     plotData[key] /= total;
   });
 
@@ -234,7 +234,6 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .keys(['cumulative_pfizer_doses', 'cumulative_moderna_doses', 'cumulative_jj_doses'])([
       plotData,
     ]);
-
   const margin = {
     left: 0,
     top: 10,
@@ -250,11 +249,9 @@ const vaccinePct = (div, size, data, colors, labels) => {
   const x = d3.scaleLinear().range([margin.left, size.width - margin.right]);
 
   const y = size.height / 2 - 15;
+  const barsData = stacked.map((d) => ({ ...d[0], key: d.key }));
 
-  const bars = svg
-    .selectAll('rect')
-    .data(stacked.map((d) => ({ ...d[0], key: d.key })))
-    .join('g');
+  const bars = svg.selectAll('rect').data(barsData).join('g');
 
   bars
     .append('rect')
@@ -293,6 +290,31 @@ const vaccinePct = (div, size, data, colors, labels) => {
     .style('font-weight', 'bold')
     .style('text-anchor', (_, i) => ['start', 'start', 'end'][i])
     .text((d) => labels[d.key]);
+  const barsHover = svg.append('g');
+  svg.on('mousemove touchout', (event) => {
+    barsHover.selectAll('*').remove();
+    const mouseX = d3.pointer(event)[0];
+
+    const xVal = x.invert(mouseX);
+    const closestBar = barsData.find((d) => xVal > d[0] && xVal < d[1]);
+
+    if (closestBar === undefined) {
+      return;
+    }
+
+    barsHover
+      .append('text')
+      .text(`${numberWithCommas(plotData[`${closestBar.key}Sum`])} doses`)
+      .attr('y', y + 35)
+      .attr('x', closestBar.key === 'cumulative_jj_doses' ? x(closestBar[1]) : x(closestBar[0]) + 5)
+      .attr('text-anchor', closestBar.key === 'cumulative_jj_doses' ? 'end' : 'start')
+      .attr('fill', colors[closestBar.key])
+      .style('font-weight', 'bold');
+  });
+
+  svg.on('mouseleave touchend', () => {
+    barsHover.selectAll('*').remove();
+  });
 
   /**
    * @todo Add total numbers for vaccines
