@@ -74,6 +74,24 @@ import makeDailyDeaths from './sbDailyDeaths';
     'https://raw.githubusercontent.com/dailynexusdata/covid-dashboard/main/dist/data/sbzips.json',
   );
 
+  zipData.features = zipData.features.map((d) => {
+    const zp = d.properties.zip;
+    const dat = data.zipcodes.find((z) => z.zip === zp);
+
+    return {
+      ...d,
+      properties: {
+        ...d.properties,
+        // pop12: Math.round(dat.pop),
+        // unvac: Math.round(dat.pop - dat.vaccinated),
+        vacPct: dat.percent_of_population_with_1_plus_dose,
+        date: convertTime(dat.date),
+      },
+    };
+  });
+
+  console.log(data.zipcodes, zipData);
+
   const resize = () => {
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);

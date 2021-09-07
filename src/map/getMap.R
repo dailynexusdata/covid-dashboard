@@ -19,7 +19,8 @@ sbzips <- inner_join(
     st_as_sf()
 
 sbzips %>%
-    arrange(desc(vacPct))
+    arrange(desc(vacPct)) %>%
+    pull(zip)
 
 sbzips %>%
     arrange(vacPct)

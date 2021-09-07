@@ -53,7 +53,17 @@ const makePlot = (data) => {
 
   const credArea = container.append('div');
 
-  credArea.append('p').text('Source: Santa Barbara Public Health 7/20/2021');
+  const updatedDate = data.features[0].properties.date;
+
+  credArea
+    .append('p')
+    .html(
+      "Source: <a href='https://data.chhs.ca.gov/'>"
+        + `California Health and Human Services Agency. Updated ${d3.timeFormat('%B %-d, %Y')(
+          updatedDate,
+        )}.</a>`,
+    );
+
   credArea.append('p').text('Chart: Bella Gennuso / Daily Nexus').style('font-style', 'italic');
 
   /**
@@ -323,8 +333,8 @@ const makePlot = (data) => {
         `<p>${d.properties.city.replace(/-/g, ', ')}</p>`
           + '<hr style="margin: 3px 0; border: none; border-top: 1px solid #d3d3d3;"/>'
           + `Zip Code: ${d.properties.zip}<br />`
-          + `Pop. 12+: ${comma(d.properties.pop12)}<br />`
-          + `# Vaccinated: ${comma(+d.properties.pop12 - +d.properties.unvac)}<br />`
+          // + `Pop. 16+: ${comma(d.properties.pop12)}<br />`
+          // + `# Vaccinated: ${comma(+d.properties.pop12 - +d.properties.zip_codes)}<br />`
           + `% Vaccinated: ${Math.round(d.properties.vacPct * 1000) / 10}%`,
       );
   });
