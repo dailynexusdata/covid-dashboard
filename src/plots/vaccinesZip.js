@@ -335,7 +335,7 @@ const makePlot = (data) => {
           + `Zip Code: ${d.properties.zip}<br />`
           // + `Pop. 16+: ${comma(d.properties.pop12)}<br />`
           // + `# Vaccinated: ${comma(+d.properties.pop12 - +d.properties.zip_codes)}<br />`
-          + `% Vaccinated: ${Math.round(d.properties.vacPct * 1000) / 10}%`,
+          + `% vaccinated: ${Math.round(d.properties.vacPct * 1000) / 10}%`,
       );
   });
 
