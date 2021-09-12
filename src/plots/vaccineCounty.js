@@ -38,7 +38,7 @@ const firstLast = (arr) => {
  * @since 8/3/2021
  */
 const makeVaccineCountySingle = (data, accessor, container, title, y, size, margin) => {
-  container.append('h3').text(title);
+  // container.append('h3').text(title);
 
   const nestedData = d3Collection
     .nest()
@@ -58,7 +58,7 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
     .y((d) => y(accessor(d) / d.population));
   const yticks = d3.range(0, y.domain()[1] + 0.2, 0.2);
   const horizLines = svg.append('g');
-  yticks.slice(1).forEach((yVal) => {
+  yticks.slice(1).forEach((yVal, i) => {
     horizLines
       .append('line')
       .attr('x1', margin.left)
@@ -70,12 +70,13 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
 
     horizLines
       .append('text')
-      .text(d3.format('.0%')(yVal))
-      .style('font-size', '10pt')
+      .text(d3.format('.0%')(yVal) + (i === yticks.length - 3 ? ' partially vaccinated' : ''))
+      // .style('font-size', '10pt')
       .attr('fill', '#adadad')
       .attr('x', margin.left)
       .attr('y', y(yVal) - 5);
   });
+
   const color = (s) => {
     if (s === 'California') {
       // UGHHHHHHHHHHHHHHHHHHHHHHHHHHH
@@ -85,7 +86,7 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
     if (s === 'Santa Barbara') {
       return '#4e79a7';
     }
-    return '#d3d3d3';
+    return '#A9A9A9';
   };
 
   svg
@@ -155,10 +156,24 @@ const makeVaccineCountySingle = (data, accessor, container, title, y, size, marg
 
   endLabels
     .append('text')
-    .attr('x', (d) => x(d.date))
-    .attr('y', (d, i) => y(d.pct) + (i >= 2 ? -5 : 30) + (i === 1 ? 15 : 0))
-    .attr('text-anchor', 'end')
-    .text((d) => d.county + (d.county === 'California' ? ' Average' : ''))
+    .attr('x', (d) => x(d.date) + 5)
+    .attr('y', (d, i) => y(d.pct) + (i === 2 ? -15 : 0) + (i === 1 ? 15 : 0))
+    // .attr('text-anchor', 'end')
+    .text((d) => d.county.split(' ')[0])
+    .attr('fill', (d) => color(d.county));
+
+  endLabels
+    .append('text')
+    .attr('x', (d) => x(d.date) + 5)
+    .attr('y', (d, i) => y(d.pct) + (i === 2 ? -15 : 0) + (i === 1 ? 15 : 0) + 14)
+    // .attr('text-anchor', 'end')
+    .text((d) => {
+      const [fr, ls] = d.county.split(' ');
+      if (fr === 'California') {
+        return 'Average';
+      }
+      return ls;
+    })
     .attr('fill', (d) => color(d.county));
 
   const tooltip = container
@@ -202,34 +217,44 @@ const makeVaccineCounty = (data) => {
     .style('width', Math.min(750, window.innerWidth - 40));
   container.selectAll('*').remove();
 
-  container.append('h1').text('Santa Barbara County Vaccinations');
+  container.append('h2').text('Vaccinations by California Counties');
 
-  container.append('p').text('here is stuff');
+  container
+    .append('p')
+    .text(
+      "Santa Barbara County's vaccination percentage has stayed in line with the state average since Dec. 2020.",
+    );
 
   const plots = container
     .append('div')
     .style('display', 'flex')
     .style('flex-wrap', 'wrap')
-    .style('justify-content', 'space-between')
+    .style('justify-content', 'center')
     .style('margin-top', '10px');
   const atLeastOne = plots.append('div').style('position', 'relative');
-  const fully = plots.append('div').style('position', 'relative');
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
+  // const size = {
+  //   height: 400,
+  //   width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
+  // };
   const size = {
     height: 400,
-    width: window.innerWidth > 700 ? 350 : window.innerWidth - 40,
+    width: Math.min(window.innerWidth - 40, 600),
   };
   const margin = {
     left: 10,
-    top: 50,
-    right: 10,
+    top: 30,
+    right: 80,
     bottom: 30,
   };
+
+  container.style('width', `${size.width}px`);
 
   const y = d3
     .scaleLinear()
@@ -245,15 +270,15 @@ const makeVaccineCounty = (data) => {
     size,
     margin,
   );
-  makeVaccineCountySingle(
-    data,
-    (d) => d.cumulative_fully_vaccinated,
-    fully,
-    'Fully Vaccinated',
-    y,
-    size,
-    margin,
-  );
+  // makeVaccineCountySingle(
+  //   data,
+  //   (d) => d.cumulative_fully_vaccinated,
+  //   fully,
+  //   'Fully Vaccinated',
+  //   y,
+  //   size,
+  //   margin,
+  // );
 };
 
 export default makeVaccineCounty;

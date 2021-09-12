@@ -23,19 +23,31 @@ const makePlot = (ageData) => {
   container.style('width', `${size.width}px`);
 
   const margin = {
-    top: 20,
+    top: 30,
     right: 120,
     bottom: 30,
     left: 10,
   };
 
-  container.append('h1').text('title');
+  container.append('h2').text('Vaccinations by Age Group');
+
+  const lower = data[1].values[data[1].values.length - 1].pct;
+  const upper = data[2].values[data[2].values.length - 1].pct;
+  container
+    .append('p')
+    .text(
+      'In the beginning of April, 18-49 year olds and 50-64 year olds became eligible for the vaccine. However, '
+        + `the 50-64 year old group currently has a vaccination percentage ${Math.round(
+          (upper - lower) * 100,
+        )}% higher than the 18-49 year old group.`,
+    );
 
   const hoverArea = container.append('div').style('position', 'relative');
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -61,14 +73,14 @@ const makePlot = (ageData) => {
     .append('path')
     .attr('d', (d) => line(d.values))
     .attr('stroke', (d, i) => colors(i))
-    .attr('stroke-width', 4)
+    .attr('stroke-width', 2)
     .attr('fill', 'none');
 
   svg
     .append('g')
     .style('color', '#adadad')
     .style('font-size', '12pt')
-    .attr('transform', `translate(0, ${size.height - margin.bottom + 5})`)
+    .attr('transform', `translate(0, ${size.height - margin.bottom})`)
     .call(
       d3
         .axisBottom()
@@ -96,7 +108,7 @@ const makePlot = (ageData) => {
 
       ylines
         .append('text')
-        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
+        .text(`${yVal * 100}%${i === 4 ? ' partially vaccinated' : ''}`)
         .attr('fill', '#adadad')
         .attr('x', margin.left)
         .attr('y', y(yVal) - 5);

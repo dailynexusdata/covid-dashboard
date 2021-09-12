@@ -42,13 +42,17 @@ const makeSbVaccines = (data) => {
 
   container.selectAll('*').remove();
 
+  // container
+  //   .append('h1')
+  //   .text(
+  //     `Santa Barbara County COVID-19 Vaccinations Through ${d3.timeFormat('%B %Y')(
+  //       data[data.length - 1].date,
+  //     )}`,
+  //   );
+
   container
-    .append('h1')
-    .text(
-      `Santa Barbara County COVID-19 Vaccinations Through ${d3.timeFormat('%B %Y')(
-        data[data.length - 1].date,
-      )}`,
-    );
+    .append('h2')
+    .text(`Vaccinations Through ${d3.timeFormat('%B %Y')(data[data.length - 1].date)}`);
 
   const vaccineLegend = container.append('div');
 
@@ -57,6 +61,7 @@ const makeSbVaccines = (data) => {
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -123,7 +128,7 @@ const makeSbVaccines = (data) => {
     .forEach((yVal, i) => {
       horizLines
         .append('text')
-        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
+        .text(`${yVal * 100}%${i === 5 ? ' of total county population' : ''}`)
         .attr('fill', '#adadad')
         .attr('x', margin.left)
         .attr('y', y(yVal) - 5);

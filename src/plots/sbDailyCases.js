@@ -27,7 +27,20 @@ const makeDailyCases = (data) => {
   // When the resize event is called, reset the plot
   container.selectAll('*').remove();
 
-  container.append('h1').text('Daily Cases in Santa Barbara County');
+  container.append('h2').text('Daily Cases');
+
+  const lastSevenDays = data.slice(-7);
+
+  container
+    .append('p')
+    .text(
+      `There have been ${d3.sum(
+        lastSevenDays,
+        (d) => d.cases,
+      )} cases reported in the county since ${d3.timeFormat('%b. %-d, %Y.')(
+        lastSevenDays[0].date,
+      )}`,
+    );
 
   const size = {
     height: 400,
@@ -44,6 +57,7 @@ const makeDailyCases = (data) => {
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -260,8 +274,8 @@ const makeDailyCases = (data) => {
       .style(
         'left',
         `${Math.max(
-          tooltipWidth / 2,
-          Math.min(mouseX - tooltipWidth / 2, size.width - tooltipWidth - 20),
+          margin.left,
+          Math.min(mouseX - tooltipWidth / 2, size.width - tooltipWidth - margin.right - 20),
         )}px`,
       )
       .style('top', `${y(closestPoint.avg) - 100}px`)

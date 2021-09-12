@@ -22,18 +22,19 @@ const makeRaces = (raceData) => {
 
   const margin = {
     top: 30,
-    right: 140,
+    right: 122,
     bottom: 30,
     left: 10,
   };
 
-  container.append('h1').text('title');
+  container.append('h2').text('Vaccinations by Race');
 
   const hoverArea = container.append('div').style('position', 'relative');
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -69,7 +70,7 @@ const makeRaces = (raceData) => {
     .append('g')
     .style('color', '#adadad')
     .style('font-size', '12pt')
-    .attr('transform', `translate(0, ${size.height - margin.bottom + 5})`)
+    .attr('transform', `translate(0, ${size.height - margin.bottom})`)
     .call(
       d3
         .axisBottom()
@@ -83,25 +84,25 @@ const makeRaces = (raceData) => {
 
   const ylines = svg.append('g');
 
-  y.ticks(4)
-    .slice(1)
-    .forEach((yVal, i) => {
-      ylines
-        .append('line')
-        .attr('x1', margin.left)
-        .attr('x2', size.width - margin.right)
-        .attr('y1', y(yVal))
-        .attr('y2', y(yVal))
-        .attr('stroke', '#d3d3d3')
-        .attr('stroke-width', '0.5px');
+  const yticks = y.ticks(4).slice(1);
 
-      ylines
-        .append('text')
-        .text(`${yVal * 100}%${i === 5 ? ' of Total County Population' : ''}`)
-        .attr('fill', '#adadad')
-        .attr('x', margin.left)
-        .attr('y', y(yVal) - 5);
-    });
+  yticks.forEach((yVal, i) => {
+    ylines
+      .append('line')
+      .attr('x1', margin.left)
+      .attr('x2', size.width - margin.right)
+      .attr('y1', y(yVal))
+      .attr('y2', y(yVal))
+      .attr('stroke', '#d3d3d3')
+      .attr('stroke-width', '0.5px');
+
+    ylines
+      .append('text')
+      .text(`${yVal * 100}%${i === yticks.length - 1 ? ' partially vaccinated' : ''}`)
+      .attr('fill', '#adadad')
+      .attr('x', margin.left)
+      .attr('y', y(yVal) - 5);
+  });
 
   ylines.lower();
 

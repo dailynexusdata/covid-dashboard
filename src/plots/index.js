@@ -90,21 +90,96 @@ import makeDailyDeaths from './sbDailyDeaths';
     };
   });
 
-  console.log(data.zipcodes, zipData);
+  const container = d3.select('#covid-dashboard-d3');
 
+  container
+    .append('h1')
+    .text('COVID-19 in Santa Barbara County')
+    .attr('class', 'covid-dashboard-d3');
+
+  container
+    .append('p')
+    .text(
+      'The Daily Nexus COVID-19 Dashboard monitors the status of COVID-19 in Santa Barbara County in the following three areas.',
+    )
+    .attr('class', 'covid-dashboard-d3');
+
+  const linkArea = container
+    .append('div')
+    .style('height', '50px')
+    .style('display', 'flex')
+    .style('justify-content', 'center')
+    .style('align-items', 'center');
+
+  linkArea
+    .append('a')
+    .attr('href', '#covid-dashboard-cases-header')
+    .text('Cases')
+    .attr('class', 'covid-dashboard-d3-links');
+  linkArea
+    .append('a')
+    .attr('href', '#covid-dashboard-vaccines-header')
+    .text('Vaccines')
+    .attr('class', 'covid-dashboard-d3-links');
+  linkArea
+    .append('a')
+    .attr('href', '#covid-dashboard-deaths-header')
+    .text('Deaths')
+    .attr('class', 'covid-dashboard-d3-links');
+
+  container
+    .append('h1')
+    .text('Santa Barbara County Cases')
+    .attr('class', 'covid-dashboard-d3')
+    .attr('id', 'covid-dashboard-cases-header');
+  container.append('div').html(`<div style="display: flex; justify-content: center">
+  <div id="sbCounty-dailyCases-d3" class="covid-dashboard-d3"></div>
+</div>`);
+  container
+    .append('h1')
+    .text('Santa Barbara County Vaccinations')
+    .attr('class', 'covid-dashboard-d3')
+    .attr('id', 'covid-dashboard-vaccines-header');
+  container.append('div').html(`
+  
+<div style="display: flex; justify-content: center">
+<div id="sbCounty-vaccines-d3" class="covid-dashboard-d3"></div>
+</div>
+  
+  <div id="dosesByVaccine-d3" class="covid-dashboard-d3"></div>
+<div style="display: flex; justify-content: center">
+    <div id="dosesByCounty-d3" class="covid-dashboard-d3"></div>
+</div>
+<div style="display: flex; justify-content: center">
+    <div id="vacByZipCode-d3" class="covid-dashboard-d3"></div>
+</div>
+<div style="display: flex; justify-content: center">
+    <div id="sbCounty-vaccine-ages" class="covid-dashboard-d3"></div>
+</div>
+<div style="display: flex; justify-content: center">
+    <div id="vaccinesbyRace-d3" class="covid-dashboard-d3"></div>
+</div>`);
+  container
+    .append('h1')
+    .text('Santa Barbara County Deaths')
+    .attr('class', 'covid-dashboard-d3')
+    .attr('id', 'covid-dashboard-deaths-header');
+  container.append('div').html(`<div style="display: flex; justify-content: center">
+  <div id="sbCounty-dailyDeaths-d3" class="covid-dashboard-d3"></div>
+</div>
+<div style="display: flex; justify-content: center">
+  <div id="deathsByCounty-d3" class="covid-dashboard-d3"></div>
+</div>`);
   const resize = () => {
+    makeDailyCases(dailyCases);
+    makeSbVaccines(vaccineData);
     makeVaccineTypes(vaccineData);
     makeVaccineCounty(countyVaccineData);
-    makeSbVaccines(vaccineData);
-    makeDeathsCounty(countyDeathData);
-    makeDailyCases(dailyCases);
-    makeDailyDeaths(dailyDeaths);
-
-    // // map chart
-    // // comment out the above 4 lines to test just this
     makeVaccinesZip(zipData);
     makeAges(ages);
     makeRaces(races);
+    makeDeathsCounty(countyDeathData);
+    makeDailyDeaths(dailyDeaths);
   };
 
   window.addEventListener('resize', () => {

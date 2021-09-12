@@ -26,7 +26,7 @@ const makeDailyCases = (data) => {
   // When the resize event is called, reset the plot
   container.selectAll('*').remove();
 
-  container.append('h1').text('Daily Deaths in Santa Barbara County');
+  container.append('h2').text('Daily Deaths');
 
   const size = {
     height: 400,
@@ -43,7 +43,7 @@ const makeDailyCases = (data) => {
   container
     .append('p')
     .text(
-      `As of ${d3.timeFormat('%B %-d, %Y')(data[data.length - 1].date)}, there have been ${sum(
+      `As of ${d3.timeFormat('%b. %-d, %Y')(data[data.length - 1].date)}, there have been ${sum(
         data,
         (d) => d.deaths,
       )} reported COVID-19 deaths in Santa Barbara County.`,
@@ -54,6 +54,7 @@ const makeDailyCases = (data) => {
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -128,7 +129,7 @@ const makeDailyCases = (data) => {
 
   const bars = svg
     .append('g')
-    .attr('fill', '#d3d3d3')
+    .attr('fill', '#A9A9A9aa')
     .selectAll('bars')
     .data(data)
     .enter()
@@ -166,9 +167,9 @@ const makeDailyCases = (data) => {
     .attr('orient', 'auto')
     .append('path')
     .attr('d', 'M 4 0 0 2 4 4')
-    .attr('fill', '#d3d3d3');
+    .attr('fill', '#A9A9A9aa');
 
-  const dayDate = d3.timeParse('%m-%d-%Y')('01-30-2021');
+  const dayDate = d3.timeParse('%m-%-d-%Y')('01-30-2021');
   const dayData = data.find((d) => d.date.getTime() === dayDate.getTime());
 
   labels
@@ -179,7 +180,7 @@ const makeDailyCases = (data) => {
     .attr('y', y(dayData.deaths) - 10)
     .attr('text-anchor', 'middle')
     .attr('font-size', '14pt')
-    .attr('fill', '#d3d3d3')
+    .attr('fill', '#A9A9A9aa')
     .attr('font-weight', 'bold');
 
   labels
@@ -208,7 +209,7 @@ const makeDailyCases = (data) => {
     .attr('d', 'M 4 0 0 2 4 4')
     .attr('fill', '#D96942');
 
-  const deathDate = d3.timeParse('%m-%d-%Y')('02-07-2021');
+  const deathDate = d3.timeParse('%m-%-d-%Y')('02-07-2021');
   const deathData = data.find((d) => d.date.getTime() === deathDate.getTime());
 
   labels
@@ -266,8 +267,8 @@ const makeDailyCases = (data) => {
       .style(
         'left',
         `${Math.max(
-          tooltipWidth / 2,
-          Math.min(mouseX - tooltipWidth / 2, size.width - tooltipWidth - 20),
+          margin.left,
+          Math.min(mouseX - tooltipWidth / 2, size.width - tooltipWidth - margin.right - 20),
         )}px`,
       )
       .style('top', `${y(closestPoint.death_avg) - 100}px`)

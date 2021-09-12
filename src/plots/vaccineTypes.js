@@ -141,7 +141,7 @@ const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
 
   const comma = d3.format(',');
   const monthAbbr = d3.timeFormat('%B');
-  const dayNumber = d3.timeFormat('%d');
+  const dayNumber = d3.timeFormat('%-d');
 
   const makeLine = (dat) => {
     hoverOver.selectAll('*').remove();
@@ -350,7 +350,7 @@ const makeVaccineTypes = (data) => {
     .style('width', Math.min(750, window.innerWidth - 40));
   container.selectAll('*').remove();
 
-  container.append('h1').text('Santa Barbara County Vaccinations');
+  container.append('h2').text('Vaccinations by Brand');
 
   const lastDate = data[data.length - 1];
   const yMax = Math.max(lastDate.cumulative_moderna_doses, lastDate.cumulative_pfizer_doses);
@@ -363,7 +363,9 @@ const makeVaccineTypes = (data) => {
   container
     .append('p')
     .text(
-      `Currently, ${pfizerMost ? 'Pfizer' : 'Moderna'} `
+      `As of ${d3.timeFormat('%b. %-d, %Y')(data[data.length - 1].date)}, ${
+        pfizerMost ? 'Pfizer' : 'Moderna'
+      } `
         + `has administered ${d3.format(',')(yMax)} doses, `
         + `${
           Math.round(
@@ -382,7 +384,7 @@ const makeVaccineTypes = (data) => {
   container
     .append('p')
     .text(
-      'Pfizer and Moderna doses were administed in similar amounts up to April, then Pfizer doubled the number of doses in May, administering almost 100,000.',
+      'Pfizer and Moderna doses were administered in similar amounts up to April 2021. In April 2021, Pfizer doubled the number of Moderna doses, administering 97,756 doses.',
     );
   const plotArea = container
     .append('div')
@@ -392,6 +394,7 @@ const makeVaccineTypes = (data) => {
 
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );

@@ -36,9 +36,11 @@ const makePlot = (container, data) => {
   const margin = {
     left: 10,
     top: 30,
-    right: 10,
+    right: 80,
     bottom: 25,
   };
+
+  container.style('width', `${size.width}px`);
 
   const nestedData = d3Collection
     .nest()
@@ -48,6 +50,7 @@ const makePlot = (container, data) => {
   const svg = container.append('svg').attr('width', size.width).attr('height', size.height);
   container
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -91,7 +94,7 @@ const makePlot = (container, data) => {
 
       horizLines
         .append('text')
-        .text(yVal * 1000 + (i === 3 ? ' deaths per 1,000 people' : ''))
+        .text(yVal * 100000 + (i === 3 ? ' deaths per 100,000 people' : ''))
         .style('font-size', '12pt')
         .attr('fill', '#adadad')
         .attr('x', margin.left)
@@ -112,7 +115,7 @@ const makePlot = (container, data) => {
     if (s === 'Santa Barbara') {
       return '#4e79a7';
     }
-    return '#d3d3d3';
+    return '#A9A9A9';
   };
 
   svg
@@ -165,10 +168,24 @@ const makePlot = (container, data) => {
 
   endLabels
     .append('text')
-    .attr('x', (d) => x(d.date))
-    .attr('y', (d) => y(d.pct) - 7)
-    .attr('text-anchor', 'end')
-    .text((d) => d.county + (d.county === 'California' ? ' Average' : ''))
+    .attr('x', (d) => x(d.date) + 5)
+    .attr('y', (d) => y(d.pct))
+    // .attr('text-anchor', 'end')
+    .text((d) => d.county.split(' ')[0])
+    .attr('fill', (d) => color(d.county));
+
+  endLabels
+    .append('text')
+    .attr('x', (d) => x(d.date) + 5)
+    .attr('y', (d, i) => y(d.pct) + 14)
+    // .attr('text-anchor', 'end')
+    .text((d) => {
+      const [fr, ls] = d.county.split(' ');
+      if (fr === 'California') {
+        return 'Average';
+      }
+      return ls;
+    })
     .attr('fill', (d) => color(d.county));
 
   const tooltip = container
@@ -195,7 +212,7 @@ const makePlot = (container, data) => {
         `${
           d.county === 'California' ? 'State Average' : `${d.county} County`
         }<hr style="border: none; border-top: 1px solid #d3d3d3; width: ${width * 0.95}px" />`
-          + `${Math.round(d.pct * 100000) / 100} deaths per 1000 people`,
+          + `${Math.round(d.pct * 10000000) / 100} deaths per 100,000 people`,
       )
       .style('pointer-events', 'none');
   });
@@ -218,7 +235,21 @@ const deathsCounties = (data) => {
   const container = d3.select('#deathsByCounty-d3').style('position', 'relative');
   container.selectAll('*').remove();
 
-  container.append('h1').text('County Death Rate (Cumulative)');
+  container.append('h2').text('Deaths by County');
+
+  const sbData = data.filter((d) => d.county === 'Santa Barbara');
+  const caData = data.filter((d) => d.county === 'California');
+  const diff = caData[caData.length - 1].pct - sbData[sbData.length - 1].pct;
+
+  container
+    .append('p')
+    .text(
+      `Santa Barbara County has a death rate of ${Math.round(
+        sbData[sbData.length - 1].pct * 100000,
+      )} per 100k people, which is ${Math.round(
+        diff * 100000,
+      )} people per 100k less than the state average.`,
+    );
 
   makePlot(container, data);
 };

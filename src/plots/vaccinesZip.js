@@ -20,8 +20,7 @@ const makePlot = (data) => {
   const container = d3.select('#vacByZipCode-d3');
   container.selectAll('*').remove();
 
-  container.append('h1').text('IV and UCSB Demographics 2020');
-  container.append('p').text('Race alone');
+  container.append('h2').text('Vaccinations by Zip Code');
 
   // Add the same amount of height and margin.top
   // change the height at the end -- the +40
@@ -32,10 +31,10 @@ const makePlot = (data) => {
   container.style('width', `${size.width}px`);
 
   const margin = {
-    top: 50,
+    top: 55,
     right: 80,
     bottom: 80,
-    left: 80,
+    left: 50,
   };
 
   const scaleContainer = container
@@ -57,14 +56,15 @@ const makePlot = (data) => {
 
   credArea
     .append('p')
+    .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>"
-        + `California Health and Human Services Agency. Updated ${d3.timeFormat('%B %-d, %Y')(
+        + `California Health and Human Services Agency. Updated ${d3.timeFormat('%b. %-d, %Y')(
           updatedDate,
         )}.</a>`,
     );
 
-  credArea.append('p').text('Chart: Bella Gennuso / Daily Nexus').style('font-style', 'italic');
+  credArea.append('p').text('Map: Bella Gennuso / Daily Nexus').style('font-style', 'italic');
 
   /**
    * Scales and projections:
@@ -99,6 +99,7 @@ const makePlot = (data) => {
     .append('path')
     .attr('d', path)
     .attr('stroke', 'black')
+    .attr('stroke-width', 0.5)
     .attr('fill', (d) => colors(+d.properties.vacPct));
 
   /**
@@ -107,25 +108,29 @@ const makePlot = (data) => {
 
   const scale = scaleContainer.append('svg').attr('width', size.width).attr('height', 40);
 
-  const axisX = d3.scaleLinear().range([45, size.width - 45]);
-  const step = 1 / 20;
+  const lowerPct = Math.floor(d3.min(data.features, (d) => d.properties.vacPct) * 100) / 100;
+  const axisX = d3
+    .scaleLinear()
+    .domain([lowerPct, 1])
+    .range([45, size.width - 45]);
+  const step = (1 - lowerPct) / 20;
   const barDom = d3
-    .range(0, 1 + step, step)
+    .range(lowerPct, 1 + step, step)
     .reduce(
       (acc, curr) => {
         const lastVal = acc[acc.length - 1].x1;
         return [...acc, { x0: lastVal, x1: curr }];
       },
-      [{ x0: 0, x1: 0 }],
+      [{ x0: lowerPct, x1: lowerPct }],
     )
     .slice(1);
 
-  scale.append('text').text('% vaccinated of zip code').attr('x', 15).attr('y', 12);
+  scale.append('text').text('% of 16+ population with at least 1 dose').attr('x', 15).attr('y', 12);
 
   scale
     .append('text')
-    .text('0%')
-    .attr('x', axisX(0) - 5)
+    .text(`${lowerPct * 100}%`)
+    .attr('x', axisX(lowerPct) - 5)
     .attr('y', 35)
     .attr('alignment-basline', 'middle')
     .attr('text-anchor', 'end');
@@ -317,7 +322,7 @@ const makePlot = (data) => {
     .style('border', '1px solid #d3d3d3');
 
   cbs.on('mousemove', function (event, d) {
-    d3.select(this).attr('stroke-width', 3);
+    d3.select(this).attr('stroke-width', 2);
     const [mouseX, mouseY] = d3.pointer(event);
     const width = 140;
 
@@ -340,7 +345,7 @@ const makePlot = (data) => {
   });
 
   cbs.on('mouseleave', function () {
-    d3.select(this).attr('stroke-width', 1);
+    d3.select(this).attr('stroke-width', 0.5);
     tooltip.style('display', 'none');
   });
 };
