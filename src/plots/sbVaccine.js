@@ -338,8 +338,8 @@ const makeSbVaccines = (data) => {
     tooltip.append('p').text(dateText);
     tooltip.append('hr').style('border', 'none').style('border-top', '1px solid #d3d3d3');
 
-    tooltip.append('p').text(`Partial: ${Math.round(d.singlePct * 10000) / 100}%`);
-    tooltip.append('p').text(`Full: ${Math.round(d.fullPct * 10000) / 100}%`);
+    tooltip.append('p').text(`Partially: ${Math.round(d.singlePct * 10000) / 100}%`);
+    tooltip.append('p').text(`Fully: ${Math.round(d.fullPct * 10000) / 100}%`);
   };
   svg.on('mouseenter touchstart', () => {
     svg.on('mousemove touchout', (event) => {

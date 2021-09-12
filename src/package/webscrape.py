@@ -172,9 +172,6 @@ def fetch_data():
         zipcodes=get_zip_codes(zip_codes)
     ), indent=2)
 
-    # with open("../../dist/data/combined.json", "w") as outfile:
-    #     outfile.write(output)
-
     return output
 
 
@@ -200,4 +197,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    # fetch_data()
+    
+    # with open("../../dist/data/combined.json", "w") as outfile:
+    #     outfile.write(fetch_data())

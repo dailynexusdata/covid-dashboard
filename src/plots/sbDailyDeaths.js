@@ -258,12 +258,11 @@ const makeDailyCases = (data) => {
       return;
     }
 
-    const tooltipWidth = 150;
+    const tooltipWidth = 170;
 
     tooltip.style('display', 'block');
     tooltip
       .style('width', `${tooltipWidth}px`)
-      .style('font-size', '14px')
       .style(
         'left',
         `${Math.max(

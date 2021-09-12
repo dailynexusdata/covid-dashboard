@@ -324,7 +324,7 @@ const makePlot = (data) => {
   cbs.on('mousemove', function (event, d) {
     d3.select(this).attr('stroke-width', 2);
     const [mouseX, mouseY] = d3.pointer(event);
-    const width = 140;
+    const width = 160;
 
     const comma = d3.format(',');
 
@@ -333,7 +333,6 @@ const makePlot = (data) => {
       .style('width', `${width}px`)
       .style('left', `${Math.min(mouseX, size.width - width - 30)}px`)
       .style('top', `${mouseY}px`)
-      .style('font-size', '10pt')
       .html(
         `<p>${d.properties.city.replace(/-/g, ', ')}</p>`
           + '<hr style="margin: 3px 0; border: none; border-top: 1px solid #d3d3d3;"/>'
