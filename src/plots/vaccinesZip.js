@@ -326,8 +326,6 @@ const makePlot = (data) => {
     const [mouseX, mouseY] = d3.pointer(event);
     const width = 160;
 
-    const comma = d3.format(',');
-
     tooltip.style('display', 'block');
     tooltip
       .style('width', `${width}px`)

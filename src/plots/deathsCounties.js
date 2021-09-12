@@ -235,7 +235,7 @@ const deathsCounties = (data) => {
   const container = d3.select('#deathsByCounty-d3').style('position', 'relative');
   container.selectAll('*').remove();
 
-  container.append('h2').text('Deaths by County');
+  container.append('h2').text('Total Deaths by County');
 
   const sbData = data.filter((d) => d.county === 'Santa Barbara');
   const caData = data.filter((d) => d.county === 'California');
@@ -244,11 +244,11 @@ const deathsCounties = (data) => {
   container
     .append('p')
     .text(
-      `Santa Barbara County has a death rate of ${Math.round(
+      `Santa Barbara County has a rate of ${Math.round(
         sbData[sbData.length - 1].pct * 100000,
-      )} per 100k people, which is ${Math.round(
+      )} deaths per 100,000 people, which is ${Math.round(
         diff * 100000,
-      )} people per 100k less than the state average.`,
+      )} deaths per 100,000 people less than the state average.`,
     );
 
   makePlot(container, data);

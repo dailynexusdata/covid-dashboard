@@ -100,7 +100,7 @@ import makeDailyDeaths from './sbDailyDeaths';
   container
     .append('p')
     .text(
-      'The Daily Nexus COVID-19 Dashboard monitors the status of COVID-19 in Santa Barbara County in the following three areas.',
+      'This page shows the status of COVID-19 in Santa Barbara County in the following three areas:',
     )
     .attr('class', 'covid-dashboard-d3');
 

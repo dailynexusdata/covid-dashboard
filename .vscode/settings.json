@@ -2,5 +2,6 @@
     "liveServer.settings.port": 5503,
     "files.watcherExclude": {
         "**/target": true
-    }
+    },
+    "python.formatting.provider": "black"
 }
