@@ -178,7 +178,7 @@ const makeDailyCases = (data) => {
     .text('Deaths')
     .attr('class', 'tooltip')
     .attr('x', x(dayDate) + 50)
-    .attr('y', y(dayData.deaths) - 10)
+    .attr('y', y(dayData.deaths) - 15)
     .attr('text-anchor', 'middle')
     .attr('font-size', '14pt')
     .attr('fill', '#A9A9A9aa')

@@ -19,7 +19,9 @@ import makeDailyDeaths from './sbDailyDeaths';
  */
 
 (async () => {
-  const data = await d3.json('dist/data/combined.json');
+  const data = await d3.json(
+    'https://dailynexus.s3-us-west-1.amazonaws.com/covid_dashboard_data.json',
+  );
 
   const convertTime = d3.timeParse('%Y-%m-%d');
 
@@ -94,10 +96,10 @@ import makeDailyDeaths from './sbDailyDeaths';
 
   const container = d3.select('#covid-dashboard-d3');
 
-  container
-    .append('h1')
-    .text('COVID-19 in Santa Barbara County')
-    .attr('class', 'covid-dashboard-d3');
+  // container
+  //   .append('h1')
+  //   .text('COVID-19 in Santa Barbara County')
+  //   .attr('class', 'covid-dashboard-d3');
 
   container
     .append('p')
@@ -128,6 +130,11 @@ import makeDailyDeaths from './sbDailyDeaths';
     .attr('href', '#covid-dashboard-deaths-header')
     .text('Deaths')
     .attr('class', 'covid-dashboard-d3-links');
+
+  container
+    .append('p')
+    .text(`Last updated ${formatDate(dailyCases[dailyCases.length - 1].date)}.`)
+    .attr('class', 'covid-dashboard-d3');
 
   container
     .append('h1')
