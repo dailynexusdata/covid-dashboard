@@ -5,7 +5,6 @@
 import * as d3 from 'd3';
 import { max } from 'd3';
 import { nest } from 'd3-collection';
-import { pointer } from 'd3-selection';
 
 const makePlot = (ageData) => {
   const container = d3.select('#sbCounty-vaccine-ages');
@@ -24,7 +23,7 @@ const makePlot = (ageData) => {
 
   const margin = {
     top: 30,
-    right: 120,
+    right: 100,
     bottom: 30,
     left: 10,
   };
@@ -36,10 +35,10 @@ const makePlot = (ageData) => {
   container
     .append('p')
     .text(
-      'In the beginning of April, 18-49 year olds and 50-64 year olds became eligible for the vaccine. However, '
-        + `the 50-64 year old group currently has a vaccination percentage ${Math.round(
+      'In the beginning of April, 18 to 49-year-olds and 50 to 64-year-olds became eligible for the vaccine. However, '
+        + `the 50 to 64-year-old group currently has a vaccination percentage that is ${Math.round(
           (upper - lower) * 100,
-        )}% higher than the 18-49 year old group.`,
+        )} percentage points higher than the 18 to 49-year-old group.`,
     );
 
   const hoverArea = container.append('div').style('position', 'relative');
@@ -120,16 +119,16 @@ const makePlot = (ageData) => {
 
   endLabels
     .append('text')
-    .attr('x', size.width - margin.right)
+    .attr('x', size.width - margin.right + 2)
     .attr('y', (d, i) => y(d.values[d.values.length - 1].pct) + (i === 2 ? -20 : i === 3 ? 12 : 0))
     .attr('alignment-baseline', 'middle')
     .attr('font-weight', 'bold')
     .attr('fill', (d, i) => colors(i))
-    .text((d) => `${d.key} year olds`);
+    .text((d) => `Ages ${d.key}`);
 
   endLabels
     .append('text')
-    .attr('x', size.width - margin.right)
+    .attr('x', size.width - margin.right + 2)
     .attr(
       'y',
       (d, i) => y(d.values[d.values.length - 1].pct) + 16 + (i === 2 ? -20 : i === 3 ? 12 : 0),

@@ -6,6 +6,7 @@
  * @since 8/17/2021
  */
 import * as d3 from 'd3';
+import { formatDate } from '@dailynexus/utility/bin';
 
 /**
  *
@@ -59,9 +60,7 @@ const makePlot = (data) => {
     .style('font-size', '10pt')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>"
-        + `California Health and Human Services Agency. Updated ${d3.timeFormat('%b. %-d, %Y')(
-          updatedDate,
-        )}.</a>`,
+        + `California Health and Human Services Agency. Updated ${formatDate(updatedDate)}.</a>`,
     );
 
   credArea.append('p').text('Map: Bella Gennuso / Daily Nexus').style('font-style', 'italic');
@@ -125,7 +124,11 @@ const makePlot = (data) => {
     )
     .slice(1);
 
-  scale.append('text').text('% of 16+ population with at least 1 dose').attr('x', 15).attr('y', 12);
+  scale
+    .append('text')
+    .text('Percent of 16+ population with at least 1 dose')
+    .attr('x', 15)
+    .attr('y', 12);
 
   scale
     .append('text')
@@ -195,7 +198,7 @@ const makePlot = (data) => {
 
   annotation
     .append('text')
-    .text('Naples and Capitan have')
+    .text('Naples and Capitan has')
     .attr('alignment-baseline', 'hanging')
     .style('font-size', '12px')
     .attr('x', endIV[0] - 5)

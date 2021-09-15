@@ -1,6 +1,7 @@
 import * as d3 from 'd3';
 import './styles.scss';
 
+import { formatDate } from '@dailynexus/utility/bin';
 import makeVaccineTypes from './vaccineTypes';
 import makeVaccineCounty from './vaccineCounty';
 import makeSbVaccines from './sbVaccine';
@@ -10,6 +11,7 @@ import makeDailyCases from './sbDailyCases';
 import makeAges from './ages';
 import makeRaces from './races';
 import makeDailyDeaths from './sbDailyDeaths';
+
 /**
  *
  * Good to checkout:

@@ -222,7 +222,7 @@ const makeVaccineCounty = (data) => {
   container
     .append('p')
     .text(
-      "Santa Barbara County's vaccination percentage has stayed in line with the state average since Dec. 2020.",
+      "Santa Barbara County's vaccination percentage has stayed in line with the state average since December 2020.",
     );
 
   const plots = container

@@ -5,7 +5,7 @@
  *
  */
 import * as d3 from 'd3';
-
+import { formatDate } from '@dailynexus/utility/bin';
 /**
  * @param {*} data - dailyCases.csv
  *
@@ -37,9 +37,7 @@ const makeDailyCases = (data) => {
       `There have been ${d3.sum(
         lastSevenDays,
         (d) => d.cases,
-      )} cases reported in the county since ${d3.timeFormat('%b. %-d, %Y.')(
-        lastSevenDays[0].date,
-      )}`,
+      )} cases reported in the county since ${formatDate(lastSevenDays[0].date)}`,
     );
 
   const size = {
@@ -173,7 +171,7 @@ const makeDailyCases = (data) => {
     .attr('d', 'M 4 0 0 2 4 4')
     .attr('fill', '#D96942');
 
-  const casesDate = d3.timeParse('%m-%d-%Y')('02-07-2021');
+  const casesDate = d3.timeParse('%m-%d-%Y')('01-25-2021');
   const casesData = data.find((d) => d.date.getTime() === casesDate.getTime());
 
   labels

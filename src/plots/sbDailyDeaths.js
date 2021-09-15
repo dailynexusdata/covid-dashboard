@@ -6,6 +6,7 @@
  */
 import * as d3 from 'd3';
 import { sum } from 'd3';
+import { formatDate } from '@dailynexus/utility/bin';
 
 /**
  * @param {*} data - dailyCases.csv
@@ -43,7 +44,7 @@ const makeDailyCases = (data) => {
   container
     .append('p')
     .text(
-      `As of ${d3.timeFormat('%b. %-d, %Y')(data[data.length - 1].date)}, there have been ${sum(
+      `As of ${formatDate(data[data.length - 1].date)}, there have been ${sum(
         data,
         (d) => d.deaths,
       )} reported COVID-19 deaths in Santa Barbara County.`,

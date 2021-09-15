@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@dailynexus/utility": "^0.0.1",
     "d3": "^7.0.0",
     "d3-collection": "^1.0.7",
     "jsdoc": "^3.6.7",
