@@ -195,6 +195,7 @@ const makeDailyCases = (data) => {
     .attr('font-size', '14pt')
     .attr('fill', '#D96942')
     .attr('font-weight', 'bold');
+
   labels
     .append('path')
     .attr(

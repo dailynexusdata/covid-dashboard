@@ -37,8 +37,10 @@ const firstLast = (arr) => {
  *
  * @since 8/3/2021
  */
-const makeVaccineCountySingle = (data, accessor, container, title, y, size, margin) => {
+const makeVaccineCountySingle = (d, accessor, container, title, y, size, margin) => {
   // container.append('h3').text(title);
+  const startDate = new Date(2020, 11, 1);
+  const data = d.filter((d) => d.date.getTime() - startDate.getTime() > 0);
 
   const nestedData = d3Collection
     .nest()

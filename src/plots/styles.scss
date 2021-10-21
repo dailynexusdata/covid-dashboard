@@ -1,13 +1,22 @@
-h1.covid-dashboard-d3 {
+h1.covid-dashboard-d3, h2.covid-dashboard-d3 {
   margin: 0;
   margin-top: 20px;
   letter-spacing: normal !important;
   font-family: Arial, Helvetica, sans-serif !important;
   line-height: normal !important;
 }
+h2.covid-dashboard-d3 {
+  font-weight: 100;
+}
+
+p.covid-dashboard-article {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 16.8px;
+  letter-spacing: 1px;
+  line-height: 26.88px
+}
 
 .covid-dashboard-d3,
-p.covid-dashboard-d3,
 .covid-dashboard-d3 * {
   letter-spacing: normal !important;
   font-family: Arial, Helvetica, sans-serif !important;

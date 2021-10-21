@@ -28,11 +28,12 @@ const firstLast = (arr) => {
  * @since 8/9/2021
  */
 const makePlot = (container, data) => {
+  const maxWidth = container.node().parentNode.parentNode.clientWidth;
+
   const size = {
     height: 400,
-    width: Math.min(600, window.innerWidth - 40),
+    width: maxWidth > 950 ? maxWidth / 2 - 10 : Math.min(600, window.innerWidth - 40),
   };
-
   const margin = {
     left: 10,
     top: 30,

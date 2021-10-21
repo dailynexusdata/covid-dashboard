@@ -5,7 +5,10 @@
 import * as d3 from 'd3';
 import { nest } from 'd3-collection';
 
-const makeRaces = (raceData) => {
+const makeRaces = (rd) => {
+  const startDate = new Date(2020, 11, 1);
+  const raceData = rd.filter((d) => d.date.getTime() - startDate.getTime() > 0);
+
   const container = d3.select('#vaccinesbyRace-d3');
   container.selectAll('*').remove();
 
@@ -13,9 +16,11 @@ const makeRaces = (raceData) => {
     .key((d) => d.group)
     .entries(raceData);
 
+  const maxWidth = container.node().parentNode.parentNode.clientWidth;
+
   const size = {
     height: 400,
-    width: Math.min(600, window.innerWidth - 40),
+    width: maxWidth > 950 ? maxWidth / 2 - 10 : Math.min(600, window.innerWidth - 40),
   };
 
   container.style('width', `${size.width}px`);

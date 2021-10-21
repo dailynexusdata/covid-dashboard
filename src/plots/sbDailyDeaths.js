@@ -20,19 +20,21 @@ const makeDailyCases = (data) => {
    */
 
   // The class is necessary to apply styling
-  const container = d3
-    .select('#sbCounty-dailyDeaths-d3')
-    .style('width', `${Math.min(600, window.innerWidth - 40)}px`);
+  const container = d3.select('#sbCounty-dailyDeaths-d3');
 
   // When the resize event is called, reset the plot
   container.selectAll('*').remove();
 
   container.append('h2').text('Daily Deaths');
 
+  const maxWidth = container.node().parentNode.parentNode.clientWidth;
+
   const size = {
     height: 400,
-    width: Math.min(600, window.innerWidth - 40),
+    width: maxWidth > 950 ? maxWidth / 2 - 10 : Math.min(600, window.innerWidth - 40),
   };
+
+  container.style('width', `${size.width}px`);
 
   const margin = {
     top: 30,
@@ -53,12 +55,12 @@ const makeDailyCases = (data) => {
   const hoverArea = container.append('div').style('position', 'relative');
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
 
-  container
-    .append('p')
-    .style('font-size', '10pt')
-    .html(
-      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
-    );
+  // container
+  //   .append('p')
+  //   .style('font-size', '10pt')
+  //   .html(
+  //     "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+  //   );
 
   /*
      Create Scales:

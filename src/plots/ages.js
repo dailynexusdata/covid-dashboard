@@ -6,9 +6,13 @@ import * as d3 from 'd3';
 import { max } from 'd3';
 import { nest } from 'd3-collection';
 
-const makePlot = (ageData) => {
+const makePlot = (d) => {
+  const startDate = new Date(2020, 11, 1);
+  const ageData = d.filter((d) => d.date.getTime() - startDate.getTime() > 0);
+
   const container = d3.select('#sbCounty-vaccine-ages');
   container.selectAll('*').remove();
+  const maxWidth = container.node().parentNode.parentNode.clientWidth;
 
   const data = nest()
     .key((d) => d.group)
@@ -16,7 +20,7 @@ const makePlot = (ageData) => {
 
   const size = {
     height: 400,
-    width: Math.min(600, window.innerWidth - 40),
+    width: maxWidth > 950 ? maxWidth / 2 - 10 : Math.min(600, window.innerWidth - 40),
   };
 
   container.style('width', `${size.width}px`);
@@ -32,8 +36,10 @@ const makePlot = (ageData) => {
 
   const lower = data[1].values[data[1].values.length - 1].pct;
   const upper = data[2].values[data[2].values.length - 1].pct;
-  container
+
+  d3.select('#covid-dashboard-age-race-top-text')
     .append('p')
+    .attr('class', 'covid-dashboard-article')
     .text(
       'In the beginning of April, 18 to 49-year-olds and 50 to 64-year-olds became eligible for the vaccine. However, '
         + `the 50 to 64-year-old group currently has a vaccination percentage that is ${Math.round(
@@ -44,12 +50,12 @@ const makePlot = (ageData) => {
   const hoverArea = container.append('div').style('position', 'relative');
   const svg = hoverArea.append('svg').attr('height', size.height).attr('width', size.width);
 
-  container
-    .append('p')
-    .style('font-size', '10pt')
-    .html(
-      "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
-    );
+  // container
+  //   .append('p')
+  //   .style('font-size', '10pt')
+  //   .html(
+  //     "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
+  //   );
 
   const x = d3
     .scaleTime()

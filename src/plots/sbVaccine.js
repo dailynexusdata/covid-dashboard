@@ -34,7 +34,10 @@ const closeVaccines = () => {
 // https://experience.arcgis.com/experience/030e625c69a04378b2756de161f82ef6
 // Variant Surveillance
 
-const makeSbVaccines = (data) => {
+const makeSbVaccines = (d) => {
+  const startDate = new Date(2020, 11, 1);
+  const data = d.filter((d) => d.date.getTime() - startDate.getTime() > 0);
+
   const container = d3
     .select('#sbCounty-vaccines-d3')
     // .style('margin', '0 10px')
@@ -427,6 +430,10 @@ const makeSbVaccines = (data) => {
 
   //   console.log(idx);
   // });
+  d3.select(container.node().parentNode.parentNode)
+    .append('p')
+    .attr('class', 'covid-dashboard-article')
+    .text('hello');
 };
 
 export default makeSbVaccines;

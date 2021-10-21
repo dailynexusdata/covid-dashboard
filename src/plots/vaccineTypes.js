@@ -34,7 +34,10 @@ import * as d3 from 'd3';
 
 const thousandsK = d3.format('.0s');
 const numberWithCommas = d3.format(',');
-const makeSinglePlot = (div, data, getValue, title, color, yMax) => {
+const makeSinglePlot = (div, d, getValue, title, color, yMax) => {
+  const startDate = new Date(2020, 11, 1);
+  const data = d.filter((c) => c.date.getTime() - startDate.getTime() > 0);
+
   const size = {
     width: 250,
     height: 250,
@@ -350,7 +353,7 @@ const makeVaccineTypes = (data) => {
     .style('width', Math.min(750, window.innerWidth - 40));
   container.selectAll('*').remove();
 
-  container.append('h2').text('Vaccinations by Brand');
+  container.append('h2').text('Vaccinations by Brand').attr('class', 'covid-dashboard-d3');
 
   const lastDate = data[data.length - 1];
   const yMax = Math.max(lastDate.cumulative_moderna_doses, lastDate.cumulative_pfizer_doses);
@@ -377,7 +380,12 @@ const makeVaccineTypes = (data) => {
           ) / 100
         }% of the ${d3.format(',')(allDoses)} doses administered in Santa Barbara County.`,
     )
-    .style('margin-bottom', '10px');
+    .style('margin-top', 0)
+    .style('margin-bottom', '10px')
+    .style('font-family', 'Georgia, serif')
+    .style('font-size', '16.8px')
+    .style('letter-spacing', '1px')
+    .style('line-height', '26.88px');
 
   const barArea = container.append('div').style('width', container.style('width'));
 
@@ -385,7 +393,14 @@ const makeVaccineTypes = (data) => {
     .append('p')
     .text(
       'Pfizer and Moderna doses were administered in similar amounts up to April 2021. In April 2021, Pfizer doubled the number of Moderna doses, administering 97,756 doses.',
-    );
+    )
+    .style('margin-top', 0)
+    .style('margin-bottom', '10px')
+    .style('font-family', 'Georgia, serif')
+    .style('font-size', '16.8px')
+    .style('letter-spacing', '1px')
+    .style('line-height', '26.88px');
+
   const plotArea = container
     .append('div')
     .style('display', 'flex')
@@ -395,6 +410,7 @@ const makeVaccineTypes = (data) => {
   container
     .append('p')
     .style('font-size', '10pt')
+    .attr('class', 'covid-dashboard-d3')
     .html(
       "Source: <a href='https://data.chhs.ca.gov/'>California Health and Human Services Agency</a>",
     );
@@ -412,7 +428,7 @@ const makeVaccineTypes = (data) => {
   };
 
   vaccinePct(
-    barArea,
+    barArea.attr('class', 'covid-dashboard-d3'),
     {
       height: 75,
       width: +container.style('width').slice(0, -2),
@@ -424,7 +440,7 @@ const makeVaccineTypes = (data) => {
 
   const pfizerDiv = plotArea.append('div');
   makeSinglePlot(
-    pfizerDiv,
+    pfizerDiv.attr('class', 'covid-dashboard-d3'),
     data,
     (d) => d.cumulative_pfizer_doses,
     'Pfizer',
@@ -434,7 +450,7 @@ const makeVaccineTypes = (data) => {
 
   const modernaDiv = plotArea.append('div');
   makeSinglePlot(
-    modernaDiv,
+    modernaDiv.attr('class', 'covid-dashboard-d3'),
     data,
     (d) => d.cumulative_moderna_doses,
     'Moderna',
@@ -444,7 +460,7 @@ const makeVaccineTypes = (data) => {
 
   const jjDiv = plotArea.append('div');
   makeSinglePlot(
-    jjDiv,
+    jjDiv.attr('class', 'covid-dashboard-d3'),
     data,
     (d) => d.cumulative_jj_doses,
     'J&J',
